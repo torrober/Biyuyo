@@ -176,10 +176,10 @@ const Ajustes = () => {
                 </div>
                 <div>
                   <Label>Categoría</Label>
-                  <Select value={rec.categoryId} onValueChange={(v) => setRec((s) => ({ ...s, categoryId: v }))}>
+                  <Select value={(rec.categoryId || "none")} onValueChange={(v) => setRec((s) => ({ ...s, categoryId: v === "none" ? "" : v }))}>
                     <SelectTrigger><SelectValue placeholder="Categoría" /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Sin categoría</SelectItem>
+                      <SelectItem value="none">Sin categoría</SelectItem>
                       {categories.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
                     </SelectContent>
                   </Select>
