@@ -1,6 +1,15 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+// UUID generator
+const generateId = () => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+};
+
 // Types
 export type AccountType = "cash" | "bank" | "savings";
 export type TxType = "expense" | "income" | "transfer";
@@ -134,15 +143,15 @@ interface FinanceState {
 }
 
 const defaultAccounts: Account[] = [
-  { id: crypto.randomUUID(), name: "Efectivo", type: "cash" },
-  { id: crypto.randomUUID(), name: "Banco", type: "bank" },
+  { id: generateId(), name: "Efectivo", type: "cash" },
+  { id: generateId(), name: "Banco", type: "bank" },
 ];
 
 const defaultCategories: Category[] = [
-  { id: crypto.randomUUID(), name: "General", emoji: "📦" },
-  { id: crypto.randomUUID(), name: "Transporte", emoji: "🚌" },
-  { id: crypto.randomUUID(), name: "Comida", emoji: "🍔" },
-  { id: crypto.randomUUID(), name: "Suscripciones", emoji: "🧾" },
+  { id: generateId(), name: "General", emoji: "📦" },
+  { id: generateId(), name: "Transporte", emoji: "🚌" },
+  { id: generateId(), name: "Comida", emoji: "🍔" },
+  { id: generateId(), name: "Suscripciones", emoji: "🧾" },
 ];
 
 export const useFinance = create<FinanceState>()(
@@ -208,7 +217,7 @@ export const useFinance = create<FinanceState>()(
       },
 
       addAccount: (a) => {
-        const id = a.id ?? crypto.randomUUID();
+        const id = a.id ?? generateId();
         set((s) => ({ accounts: [...s.accounts, { ...a, id }] }));
         return id;
       },
@@ -222,7 +231,7 @@ export const useFinance = create<FinanceState>()(
       })),
 
       addCategory: (c) => {
-        const id = c.id ?? crypto.randomUUID();
+        const id = c.id ?? generateId();
         set((s) => ({ categories: [...s.categories, { ...c, id }] }));
         return id;
       },
@@ -237,7 +246,7 @@ export const useFinance = create<FinanceState>()(
       })),
 
       addTransaction: (t) => {
-        const id = t.id ?? crypto.randomUUID();
+        const id = t.id ?? generateId();
         const date = t.date ?? new Date().toISOString();
         set((s) => ({ transactions: [{ ...t, id, date }, ...s.transactions] }));
         return id;
@@ -256,10 +265,10 @@ export const useFinance = create<FinanceState>()(
       }),
 
       createTransfer: ({ fromAccountId, toAccountId, amount, date, description, categoryId }) => {
-        const transferId = crypto.randomUUID();
+        const transferId = generateId();
         const when = date ?? new Date().toISOString();
-        const debitId = crypto.randomUUID();
-        const creditId = crypto.randomUUID();
+        const debitId = generateId();
+        const creditId = generateId();
         set((s) => ({
           transactions: [
             {
@@ -289,12 +298,12 @@ export const useFinance = create<FinanceState>()(
       },
 
       addMacroGroup: (g) => {
-        const id = g.id ?? crypto.randomUUID();
+        const id = g.id ?? generateId();
         set((s) => ({ macroGroups: [...s.macroGroups, { ...g, id }] }));
         return id;
       },
       addMacroToGroup: (groupId, m) => {
-        const id = m.id ?? crypto.randomUUID();
+        const id = m.id ?? generateId();
         set((s) => ({
           macroGroups: s.macroGroups.map((g) =>
             g.id === groupId ? { ...g, macros: [...g.macros, { ...m, id }] } : g
@@ -330,7 +339,7 @@ export const useFinance = create<FinanceState>()(
       },
 
       addRecurring: (r) => {
-        const id = r.id ?? crypto.randomUUID();
+        const id = r.id ?? generateId();
         set((s) => ({ recurrings: [...s.recurrings, { ...r, id, paidMonths: [] }] }));
         return id;
       },
@@ -344,7 +353,7 @@ export const useFinance = create<FinanceState>()(
       },
 
       addCredit: (c) => {
-        const id = c.id ?? crypto.randomUUID();
+        const id = c.id ?? generateId();
         set((s) => ({ credits: [...s.credits, { ...c, id, paid: c.paid ?? 0, lastPaidMonth: c.lastPaidMonth }] }));
         return id;
       },
