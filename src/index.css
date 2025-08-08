@@ -103,3 +103,31 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* Design enhancements: gradients, shadows, motion utilities */
+@layer base {
+  :root {
+    --primary-glow: 222.2 47.4% 30%;
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.25);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dark {
+    --primary-glow: 222.2 47.4% 60%;
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary-glow)), hsl(var(--primary)));
+    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary-glow) / 0.25);
+  }
+}
+
+@layer components {
+  .story-link {
+    @apply relative inline-block after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-primary after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left;
+  }
+  .hover-scale {
+    @apply transition-transform duration-200 hover:scale-105;
+  }
+  .pulse {
+    @apply animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite];
+  }
+}
