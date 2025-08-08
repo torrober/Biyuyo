@@ -9,6 +9,12 @@ import NotFound from "./pages/NotFound";
 import Macros from "./pages/Macros";
 import Transacciones from "./pages/Transacciones";
 import Ajustes from "./pages/Ajustes";
+import AccountsSettings from "./pages/settings/Accounts";
+import CategoriesSettings from "./pages/settings/Categories";
+import RecurringsSettings from "./pages/settings/Recurrings";
+import CreditsSettings from "./pages/settings/Credits";
+import MacrosSettings from "./pages/settings/Macros";
+import BackupSettings from "./pages/settings/Backup";
 import { Home, Zap, List, Settings, Plus, Tag, CreditCard, Wallet } from "lucide-react";
 import ThemeToggle from "./components/ThemeToggle";
 import { Button } from "@/components/ui/button";
@@ -37,6 +43,12 @@ const App = () => (
                 <Route path="/macros" element={<Macros />} />
                 <Route path="/transacciones" element={<Transacciones />} />
                 <Route path="/ajustes" element={<Ajustes />} />
+                <Route path="/ajustes/cuentas" element={<AccountsSettings />} />
+                <Route path="/ajustes/categorias" element={<CategoriesSettings />} />
+                <Route path="/ajustes/recurrentes" element={<RecurringsSettings />} />
+                <Route path="/ajustes/creditos" element={<CreditsSettings />} />
+                <Route path="/ajustes/macros" element={<MacrosSettings />} />
+                <Route path="/ajustes/backup" element={<BackupSettings />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

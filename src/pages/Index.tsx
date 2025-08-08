@@ -131,27 +131,24 @@ const Dashboard = () => {
       <section className="grid grid-cols-1">
         <Card>
           <CardHeader>
-            <CardTitle>Resumen mensual</CardTitle>
+            <CardTitle className="text-gray-900 dark:text-white text-lg font-semibold">
+              Resumen mensual
+            </CardTitle>
+            <div className="text-right">
+              <span className="text-gray-600 dark:text-gray-300 text-sm font-medium block">
+                Balance General Total
+              </span>
+              <span className="text-gray-900 dark:text-white text-lg font-bold">
+                {currency(kpis.saldo)}
+              </span>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="flex justify-between items-start mb-2">
-              <h2 className="text-gray-900 dark:text-white text-lg font-semibold">
-                Resumen mensual
-              </h2>
-              <div className="text-right">
-                <span className="text-gray-600 dark:text-gray-300 text-sm font-medium block">
-                  Balance General Total
-                </span>
-                <span className="text-gray-900 dark:text-white text-lg font-bold">
-                  {currency(kpis.saldo)}
-                </span>
-              </div>
-            </div>
             <div className="mb-2">
-              <div className="text-purple-500 text-5xl font-extrabold leading-tight">
+              <div className="text-5xl font-extrabold leading-tight">
                 {currency(kpis.disponible)}
               </div>
-              <div className="text-gray-500 dark:text-gray-400 text-sm">
+              <div className="text-muted-foreground dark:text-gray-400 text-sm">
                 Disponibles para gastar o ahorrar este mes.
               </div>
             </div>
