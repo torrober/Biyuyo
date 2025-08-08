@@ -2,15 +2,16 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
+import { BrowserRouter, Routes, Route, NavLink, Link } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Macros from "./pages/Macros";
 import Transacciones from "./pages/Transacciones";
 import Ajustes from "./pages/Ajustes";
-import { Home, Zap, List, Settings } from "lucide-react";
+import { Home, Zap, List, Settings, Plus } from "lucide-react";
 import ThemeToggle from "./components/ThemeToggle";
+import { Button } from "@/components/ui/button";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,13 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
+            <div className="fixed bottom-24 right-4 z-50">
+              <Button asChild size="icon" aria-label="Agregar" className="h-14 w-14 rounded-full hover-scale">
+                <Link to="/transacciones">
+                  <Plus className="h-6 w-6" />
+                </Link>
+              </Button>
+            </div>
             <footer className="fixed bottom-0 inset-x-0 z-50 bg-background/90 backdrop-blur border-t">
               <nav className="container grid grid-cols-4">
                 <NavLink to="/" end className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Dashboard" title="Dashboard">
