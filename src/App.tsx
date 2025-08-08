@@ -9,9 +9,10 @@ import NotFound from "./pages/NotFound";
 import Macros from "./pages/Macros";
 import Transacciones from "./pages/Transacciones";
 import Ajustes from "./pages/Ajustes";
-import { Home, Zap, List, Settings, Plus } from "lucide-react";
+import { Home, Zap, List, Settings, Plus, Tag, CreditCard, Wallet } from "lucide-react";
 import ThemeToggle from "./components/ThemeToggle";
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 
 const queryClient = new QueryClient();
 
@@ -41,11 +42,39 @@ const App = () => (
               </Routes>
             </main>
             <div className="fixed bottom-24 right-4 z-50">
-              <Button asChild size="icon" aria-label="Agregar" className="h-14 w-14 rounded-full hover-scale">
-                <Link to="/transacciones">
-                  <Plus className="h-6 w-6" />
-                </Link>
-              </Button>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button size="icon" aria-label="Abrir acciones rápidas" className="h-14 w-14 rounded-full hover-scale">
+                    <Plus className="h-6 w-6" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="end" className="w-64 p-2 space-y-1">
+                  <Button asChild variant="outline" className="w-full justify-between">
+                    <Link to="/transacciones" aria-label="Crear nueva transacción" className="flex w-full items-center justify-between">
+                      <span className="text-sm">Crear nueva Transacción</span>
+                      <Wallet className="h-4 w-4 opacity-70" />
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="w-full justify-between">
+                    <Link to="/ajustes" aria-label="Crear nueva categoría" className="flex w-full items-center justify-between">
+                      <span className="text-sm">Crear nueva Categoría</span>
+                      <Tag className="h-4 w-4 opacity-70" />
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="w-full justify-between">
+                    <Link to="/ajustes" aria-label="Crear nuevo crédito" className="flex w-full items-center justify-between">
+                      <span className="text-sm">Crear nuevo Crédito</span>
+                      <CreditCard className="h-4 w-4 opacity-70" />
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="w-full justify-between">
+                    <Link to="/macros" aria-label="Crear nueva macro" className="flex w-full items-center justify-between">
+                      <span className="text-sm">Crear nueva Macro</span>
+                      <Zap className="h-4 w-4 opacity-70" />
+                    </Link>
+                  </Button>
+                </PopoverContent>
+              </Popover>
             </div>
             <footer className="fixed bottom-0 inset-x-0 z-50 bg-background/90 backdrop-blur border-t">
               <nav className="container grid grid-cols-4">
