@@ -83,23 +83,39 @@ const App = () => (
               </Popover>
             </div>
             <footer className="fixed bottom-0 inset-x-0 z-50 bg-background/90 backdrop-blur border-t">
-              <nav className="container grid grid-cols-4">
-                <NavLink to="/" end className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Dashboard" title="Dashboard">
-                  <Home className="h-5 w-5" />
-                  <span className="text-[11px] leading-none">Inicio</span>
-                </NavLink>
-                <NavLink to="/macros" className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Macros" title="Macros">
-                  <Zap className="h-5 w-5" />
-                  <span className="text-[11px] leading-none">Macros</span>
-                </NavLink>
-                <NavLink to="/transacciones" className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Transacciones" title="Transacciones">
-                  <List className="h-5 w-5" />
-                  <span className="text-[11px] leading-none">Movs</span>
-                </NavLink>
-                <NavLink to="/ajustes" className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Ajustes" title="Ajustes">
-                  <Settings className="h-5 w-5" />
-                  <span className="text-[11px] leading-none">Ajustes</span>
-                </NavLink>
+              <nav className="container relative">
+                {/* Botón de inicio central */}
+                <div className="absolute left-1/2 -translate-x-1/2 -top-6 z-10">
+                  <NavLink 
+                    to="/" 
+                    end 
+                    className={({ isActive }) => 
+                      `flex items-center justify-center w-14 h-14
+                      rounded-full border-4 border-background shadow-sm
+                      ${isActive ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`
+                    } 
+                    aria-label="Dashboard" 
+                    title="Dashboard"
+                  >
+                    <Home className="h-6 w-6" />
+                  </NavLink>
+                </div>
+
+                {/* Barra de navegación */}
+                <div className="grid grid-cols-3 relative">
+                  <NavLink to="/macros" className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Macros" title="Macros">
+                    <Zap className="h-5 w-5" />
+                    <span className="text-[11px] leading-none">Macros</span>
+                  </NavLink>
+                  <NavLink to="/transacciones" className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Transacciones" title="Transacciones">
+                    <List className="h-5 w-5" />
+                    <span className="text-[11px] leading-none">Movs</span>
+                  </NavLink>
+                  <NavLink to="/ajustes" className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Ajustes" title="Ajustes">
+                    <Settings className="h-5 w-5" />
+                    <span className="text-[11px] leading-none">Ajustes</span>
+                  </NavLink>
+                </div>
               </nav>
             </footer>
           </div>
