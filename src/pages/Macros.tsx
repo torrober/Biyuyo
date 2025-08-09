@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const currency = (n: number) => n.toLocaleString(undefined, { style: "currency", currency: "USD" });
+const currency = (n: number) => n.toLocaleString("es-CO", { style: "currency", currency: "COP" });
 
 const Macros = () => {
   const { macroGroups, triggerMacro, deleteTransaction } = useFinance();

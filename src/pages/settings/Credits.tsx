@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Helmet } from "react-helmet-async";
 
+const currency = (n: number) => n.toLocaleString("es-CO", { style: "currency", currency: "COP" });
+
 const CreditsSettings = () => {
   const { accounts, credits, addCredit, deleteCredit } = useFinance();
   const [cre, setCre] = useState({ name: "", total: 0, monthlyInstallment: 0, dueDay: 1, accountId: "" });
@@ -66,7 +68,7 @@ const CreditsSettings = () => {
           <ul className="space-y-2">
             {credits.map((c) => (
               <li key={c.id} className="flex items-center justify-between rounded-md border p-2">
-                <div className="text-sm">{c.name} · Total {c.total} · Cuota {c.monthlyInstallment}</div>
+                <div className="text-sm">{c.name} · Total {currency(c.total)} · Cuota {currency(c.monthlyInstallment)}</div>
                 <Button variant="destructive" size="sm" onClick={() => deleteCredit(c.id)}>Eliminar</Button>
               </li>
             ))}

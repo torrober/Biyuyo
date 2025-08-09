@@ -13,8 +13,7 @@ import {
   Tooltip as ReTooltip,
 } from "recharts";
 
-const currency = (n: number) =>
-  n.toLocaleString(undefined, { style: "currency", currency: "COP" });
+const currency = (n: number) => n.toLocaleString("es-CO", { style: "currency", currency: "COP" });
 
 const Dashboard = () => {
   const {
@@ -128,60 +127,58 @@ const Dashboard = () => {
       </Helmet>
 
       <Card>
-        <CardHeader>
+        <CardHeader className="pb-2">
           <CardTitle>Resumen mensual</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-8">
-          <div className="grid gap-8">
-            <div className="space-y-2">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-baseline gap-2">
-                <p className="text-base sm:text-sm text-muted-foreground">Balance General Total</p>
-                <p className="text-2xl sm:text-xl font-medium">{currency(kpis.saldo)}</p>
+        <CardContent>
+          <div className="space-y-4">
+            <div>
+              <div className="mb-1">
+                <p className="text-xs text-muted-foreground">Balance General Total</p>
+                <p className="text-lg font-medium">{currency(kpis.saldo)}</p>
               </div>
               <Progress className="h-2" value={0} />
             </div>
 
-            <div>
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-baseline gap-2 mb-6">
-                <p className="text-base sm:text-sm text-muted-foreground">Disponible este mes</p>
-                <p className="text-4xl font-bold">{currency(kpis.disponible)}</p>
+            <div className="mb-4">
+              <p className="text-xs text-muted-foreground mb-1">Disponible este mes</p>
+              <p className="text-2xl font-bold">{currency(kpis.disponible)}</p>
+            </div>
+
+            <div className="grid gap-2">
+              <div className="grid grid-cols-[1fr,auto] items-center gap-3 p-2 rounded-lg border bg-card/50">
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-green-500 shrink-0" />
+                  <p className="text-xs font-medium truncate">Ingresos del Mes</p>
+                </div>
+                <p className="text-sm font-medium text-green-600 dark:text-green-400 tabular-nums">
+                  {currency(0.00)}
+                </p>
               </div>
 
-              <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-lg border bg-card/50">
-                  <div className="flex items-center gap-3">
-                    <div className="h-2 w-2 rounded-full bg-green-500" />
-                    <p className="text-base sm:text-sm font-medium">Ingresos del Mes</p>
-                  </div>
-                  <p className="text-lg sm:text-base font-medium text-green-600 dark:text-green-400">
-                    {currency(0.00)}
-                  </p>
+              <div className="grid grid-cols-[1fr,auto] items-center gap-3 p-2 rounded-lg border bg-card/50">
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-red-500 shrink-0" />
+                  <p className="text-xs font-medium truncate">Gastos Realizados</p>
                 </div>
+                <p className="text-sm font-medium text-red-600 dark:text-red-400 tabular-nums">
+                  {currency(expensesByCategory(month).reduce((a, b) => a + b.total, 0))}
+                </p>
+              </div>
 
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-lg border bg-card/50">
-                  <div className="flex items-center gap-3">
-                    <div className="h-2 w-2 rounded-full bg-red-500" />
-                    <p className="text-base sm:text-sm font-medium">Gastos Realizados</p>
-                  </div>
-                  <p className="text-lg sm:text-base font-medium text-red-600 dark:text-red-400">
-                    {currency(expensesByCategory(month).reduce((a, b) => a + b.total, 0))}
-                  </p>
+              <div className="grid grid-cols-[1fr,auto] items-center gap-3 p-2 rounded-lg border bg-card/50">
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-yellow-500 shrink-0" />
+                  <p className="text-xs font-medium truncate">Gastos Futuros</p>
                 </div>
-
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-lg border bg-card/50">
-                  <div className="flex items-center gap-3">
-                    <div className="h-2 w-2 rounded-full bg-yellow-500" />
-                    <p className="text-base sm:text-sm font-medium">Gastos Futuros</p>
-                  </div>
-                  <p className="text-lg sm:text-base font-medium text-yellow-600 dark:text-yellow-400">
-                    {currency(kpis.obligaciones)}
-                  </p>
-                </div>
+                <p className="text-sm font-medium text-yellow-600 dark:text-yellow-400 tabular-nums">
+                  {currency(kpis.obligaciones)}
+                </p>
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>

@@ -7,8 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Plus, ChevronRight } from "lucide-react";
 
-const currency = (n: number) => n.toLocaleString(undefined, { style: "currency", currency: "USD" });
+const currency = (n: number) => n.toLocaleString("es-CO", { style: "currency", currency: "COP" });
 
 const Transacciones = () => {
   const {
@@ -21,6 +23,8 @@ const Transacciones = () => {
     createTransfer,
   } = useFinance();
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAdvanced, setIsAdvanced] = useState(false);
   const [query, setQuery] = useState("");
   const [accountFilter, setAccountFilter] = useState<string | "all">("all");
 
@@ -85,154 +89,156 @@ const Transacciones = () => {
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Nueva transacción (avanzado)</CardTitle>
+            <CardTitle>Nueva Transacción</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-3">
-            <div className="col-span-2">
-              <Label>Tipo</Label>
-              <Select value={newTx.type} onValueChange={(v: TxType) => setNewTx((s) => ({ ...s, type: v }))}>
-                <SelectTrigger><SelectValue placeholder="Tipo" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="expense">Gasto</SelectItem>
-                  <SelectItem value="income">Ingreso</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Monto</Label>
-              <Input type="number" value={newTx.amount} onChange={(e) => setNewTx((s) => ({ ...s, amount: Number(e.target.value) }))} />
-            </div>
-            <div>
-              <Label>Fecha</Label>
-              <Input type="datetime-local" value={newTx.date as string} onChange={(e) => setNewTx((s) => ({ ...s, date: e.target.value }))} />
-            </div>
-            <div>
-              <Label>Cuenta</Label>
-              <Select value={newTx.accountId} onValueChange={(v) => setNewTx((s) => ({ ...s, accountId: v }))}>
-                <SelectTrigger><SelectValue placeholder="Cuenta" /></SelectTrigger>
-                <SelectContent>
-                  {accounts.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Categoría</Label>
-              <Select value={newTx.categoryId ?? "none"} onValueChange={(v) => setNewTx((s) => ({ ...s, categoryId: v === "none" ? null : v }))}>
-                <SelectTrigger><SelectValue placeholder="Categoría" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">Sin categoría</SelectItem>
-                  {categories.map((c) => <SelectItem key={c.id} value={c.id}>{c.emoji ?? ""} {c.name}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="col-span-2">
-              <Label>Descripción</Label>
-              <Input value={newTx.description ?? ""} onChange={(e) => setNewTx((s) => ({ ...s, description: e.target.value }))} />
-            </div>
-            <div className="col-span-2">
-              <Button onClick={onCreateNew}>Agregar</Button>
-            </div>
+          <CardContent>
+            <Button 
+              onClick={() => setIsModalOpen(true)}
+              className="w-full h-24 text-lg hover:scale-[0.98] transition-transform"
+            >
+              <Plus className="mr-2 h-5 w-5" />
+              Añadir Transacción
+            </Button>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Nueva transferencia</CardTitle>
-          </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-3">
-            <div>
-              <Label>Monto</Label>
-              <Input type="number" value={transfer.amount} onChange={(e) => setTransfer((s) => ({ ...s, amount: Number(e.target.value) }))} />
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Nueva Transacción</DialogTitle>
+            </DialogHeader>
+            
+            <div className="flex items-center justify-between py-4">
+              <Label htmlFor="advanced-mode">Modo Avanzado</Label>
+              <Switch
+                id="advanced-mode"
+                checked={isAdvanced}
+                onCheckedChange={setIsAdvanced}
+              />
             </div>
-            <div>
-              <Label>Fecha</Label>
-              <Input type="datetime-local" value={transfer.date} onChange={(e) => setTransfer((s) => ({ ...s, date: e.target.value }))} />
+
+            <div className="grid gap-4">
+              {isAdvanced ? (
+                <div className="grid grid-cols-1 gap-3">
+                  <div>
+                    <Label>Tipo</Label>
+                    <Select value={newTx.type} onValueChange={(v: TxType) => setNewTx((s) => ({ ...s, type: v }))}>
+                      <SelectTrigger><SelectValue placeholder="Tipo" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="expense">Gasto</SelectItem>
+                        <SelectItem value="income">Ingreso</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label>Monto</Label>
+                    <Input type="number" value={newTx.amount} onChange={(e) => setNewTx((s) => ({ ...s, amount: Number(e.target.value) }))} />
+                  </div>
+
+                  <div>
+                    <Label>Fecha</Label>
+                    <Input type="datetime-local" value={newTx.date as string} onChange={(e) => setNewTx((s) => ({ ...s, date: e.target.value }))} />
+                  </div>
+
+                  <div>
+                    <Label>Cuenta</Label>
+                    <Select value={newTx.accountId} onValueChange={(v) => setNewTx((s) => ({ ...s, accountId: v }))}>
+                      <SelectTrigger><SelectValue placeholder="Cuenta" /></SelectTrigger>
+                      <SelectContent>
+                        {accounts.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label>Categoría</Label>
+                    <Select value={newTx.categoryId ?? "none"} onValueChange={(v) => setNewTx((s) => ({ ...s, categoryId: v === "none" ? null : v }))}>
+                      <SelectTrigger><SelectValue placeholder="Categoría" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">Sin categoría</SelectItem>
+                        {categories.map((c) => <SelectItem key={c.id} value={c.id}>{c.emoji ?? ""} {c.name}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label>Descripción</Label>
+                    <Input value={newTx.description ?? ""} onChange={(e) => setNewTx((s) => ({ ...s, description: e.target.value }))} />
+                  </div>
+                </div>
+              ) : (
+                <div className="grid gap-4">
+                  <div>
+                    <Label>Tipo</Label>
+                    <Select value={newTx.type} onValueChange={(v: TxType) => setNewTx((s) => ({ ...s, type: v }))}>
+                      <SelectTrigger><SelectValue placeholder="Tipo" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="expense">Gasto</SelectItem>
+                        <SelectItem value="income">Ingreso</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label>Monto</Label>
+                    <Input type="number" value={newTx.amount} onChange={(e) => setNewTx((s) => ({ ...s, amount: Number(e.target.value) }))} />
+                  </div>
+
+                  <div>
+                    <Label>Descripción</Label>
+                    <Input value={newTx.description ?? ""} onChange={(e) => setNewTx((s) => ({ ...s, description: e.target.value }))} />
+                  </div>
+                </div>
+              )}
             </div>
-            <div>
-              <Label>Desde</Label>
-              <Select value={transfer.from} onValueChange={(v) => setTransfer((s) => ({ ...s, from: v }))}>
-                <SelectTrigger><SelectValue placeholder="Desde" /></SelectTrigger>
-                <SelectContent>
-                  {accounts.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Hacia</Label>
-              <Select value={transfer.to} onValueChange={(v) => setTransfer((s) => ({ ...s, to: v }))}>
-                <SelectTrigger><SelectValue placeholder="Hacia" /></SelectTrigger>
-                <SelectContent>
-                  {accounts.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="col-span-2">
-              <Label>Descripción</Label>
-              <Input value={transfer.description} onChange={(e) => setTransfer((s) => ({ ...s, description: e.target.value }))} />
-            </div>
-            <div className="col-span-2">
-              <Button onClick={onCreateTransfer}>Transferir</Button>
-            </div>
-          </CardContent>
-        </Card>
+
+            <DialogFooter>
+              <Button onClick={() => {
+                onCreateNew();
+                setIsModalOpen(false);
+                setIsAdvanced(false);
+              }}>
+                Crear
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </section>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Historial</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-3 mb-4">
-            <Input placeholder="Buscar descripción..." value={query} onChange={(e) => setQuery(e.target.value)} />
-            <Select value={accountFilter} onValueChange={(v) => setAccountFilter(v)}>
-              <SelectTrigger className="w-[200px]"><SelectValue placeholder="Cuenta" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todas</SelectItem>
-                {accounts.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-left border-b">
-                  <th className="py-2">Fecha</th>
-                  <th>Descripción</th>
-                  <th>Cuenta</th>
-                  <th>Categoría</th>
-                  <th>Tipo</th>
-                  <th className="text-right">Monto</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((t) => {
-                  const acc = accounts.find((a) => a.id === t.accountId)?.name ?? "";
-                  const cat = categories.find((c) => c.id === t.categoryId)?.name ?? "";
-                  const date = new Date(t.date).toLocaleString();
-                  return (
-                    <tr key={t.id} className="border-b">
-                      <td className="py-2">{date}</td>
-                      <td>{t.description}</td>
-                      <td>{acc}</td>
-                      <td>{cat || "—"}</td>
-                      <td>{t.transferId ? "Transferencia" : t.type === "expense" ? "Gasto" : "Ingreso"}</td>
-                      <td className="text-right">{t.type === "expense" ? `- ${currency(t.amount)}` : `+ ${currency(t.amount)}`}</td>
-                      <td className="text-right">
-                        {!t.transferId && (
-                          <Button variant="outline" size="sm" onClick={() => setEditing(t)}>Editar</Button>
-                        )}
-                        <Button variant="ghost" size="sm" onClick={() => setConfirmDelete(t)}>Eliminar</Button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Últimas Transacciones</CardTitle>
+          </CardHeader>
+          <CardContent className="grid gap-4">
+            {filtered.slice(0, 4).map((t) => {
+              const acc = accounts.find((a) => a.id === t.accountId)?.name ?? "";
+              const cat = categories.find((c) => c.id === t.categoryId)?.name ?? "";
+              const date = new Date(t.date);
+              const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear().toString().slice(-2)} - ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+              
+              return (
+                <Card key={t.id} className="cursor-pointer hover:bg-accent/50 transition-colors" onClick={() => setEditing(t)}>
+                  <CardHeader className="py-3">
+                    <CardTitle className={t.type === "expense" ? "text-red-500" : "text-green-500"}>
+                      {t.type === "expense" ? `- ${currency(t.amount)}` : `+ ${currency(t.amount)}`}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="py-2">
+                    <p className="text-sm text-muted-foreground">{formattedDate}</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </CardContent>
+        </Card>
+        
+        <Button variant="outline" className="w-full">
+          Ver más transacciones
+          <ChevronRight className="ml-2 h-4 w-4" />
+        </Button>
+      </div>
 
       {/* Edit Dialog */}
       <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
@@ -286,7 +292,6 @@ const Transacciones = () => {
             </div>
           )}
           <DialogFooter>
-            <Button variant="secondary" onClick={() => setEditing(null)}>Cancelar</Button>
             <Button onClick={onSaveEdit}>Guardar</Button>
           </DialogFooter>
         </DialogContent>

@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Helmet } from "react-helmet-async";
 
+const currency = (n: number) => n.toLocaleString("es-CO", { style: "currency", currency: "COP" });
+
 const RecurringsSettings = () => {
   const { accounts, categories, recurrings, addRecurring, deleteRecurring } = useFinance();
   const [rec, setRec] = useState({ name: "", amount: 0, dueDay: 1, accountId: "", categoryId: "" });
@@ -71,7 +73,7 @@ const RecurringsSettings = () => {
           <ul className="space-y-2">
             {recurrings.map((r) => (
               <li key={r.id} className="flex items-center justify-between rounded-md border p-2">
-                <div className="text-sm">{r.name} · {r.amount} · día {r.dueDay}</div>
+                <div className="text-sm">{r.name} · {currency(r.amount)} · día {r.dueDay}</div>
                 <Button variant="destructive" size="sm" onClick={() => deleteRecurring(r.id)}>Eliminar</Button>
               </li>
             ))}
