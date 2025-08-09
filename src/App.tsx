@@ -102,11 +102,13 @@ const App = () => (
                 </div>
 
                 {/* Barra de navegación */}
-                <div className="grid grid-cols-3 relative">
+                <div className="grid grid-cols-4 relative items-center">
                   <NavLink to="/macros" className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Macros" title="Macros">
                     <Zap className="h-5 w-5" />
                     <span className="text-[11px] leading-none">Macros</span>
                   </NavLink>
+                  {/* Espacio central para el botón Home sobresaliente */}
+                  <div aria-hidden className="h-0" />
                   <NavLink to="/transacciones" className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Transacciones" title="Transacciones">
                     <List className="h-5 w-5" />
                     <span className="text-[11px] leading-none">Movs</span>
