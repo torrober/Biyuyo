@@ -47,72 +47,63 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
-            <div className="fixed bottom-24 right-4 z-50">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button size="icon" aria-label="Abrir acciones rápidas" className="h-14 w-14 rounded-full hover-scale">
-                    <Plus className="h-6 w-6" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent align="end" className="w-64 p-2 space-y-1">
-                  <Button asChild variant="outline" className="w-full justify-between">
-                    <Link to="/transacciones" aria-label="Crear nueva transacción" className="flex w-full items-center justify-between">
-                      <span className="text-sm">Crear nueva Transacción</span>
-                      <Wallet className="h-4 w-4 opacity-70" />
-                    </Link>
-                  </Button>
-                  <Button asChild variant="outline" className="w-full justify-between">
-                    <Link to="/ajustes/categorias" aria-label="Crear nueva categoría" className="flex w-full items-center justify-between">
-                      <span className="text-sm">Crear nueva Categoría</span>
-                      <Tag className="h-4 w-4 opacity-70" />
-                    </Link>
-                  </Button>
-                  <Button asChild variant="outline" className="w-full justify-between">
-                    <Link to="/ajustes/creditos" aria-label="Crear nuevo crédito" className="flex w-full items-center justify-between">
-                      <span className="text-sm">Crear nuevo Crédito</span>
-                      <CreditCard className="h-4 w-4 opacity-70" />
-                    </Link>
-                  </Button>
-                  <Button asChild variant="outline" className="w-full justify-between">
-                    <Link to="/ajustes/macros" aria-label="Crear nueva macro" className="flex w-full items-center justify-between">
-                      <span className="text-sm">Crear nueva Macro</span>
-                      <Zap className="h-4 w-4 opacity-70" />
-                    </Link>
-                  </Button>
-                </PopoverContent>
-              </Popover>
-            </div>
             <footer className="fixed bottom-0 inset-x-0 z-50 bg-background/90 backdrop-blur border-t">
               <nav className="container relative pt-6 pb-2">
                 {/* Botón de inicio central */}
 
                 {/* Home centrado absolutamente */}
-                <div className="absolute left-1/2 -translate-x-1/2 top-0 -translate-y-3 z-20">
-                  <NavLink 
-                    to="/" 
-                    end 
-                    className={({ isActive }) => 
-                      `flex items-center justify-center w-14 h-14 rounded-full border-4 border-background shadow-sm ${isActive ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`
-                    }
-                    aria-label="Inicio" 
-                    title="Inicio"
-                  >
-                    <Home className="h-6 w-6" />
-                  </NavLink>
+                <div className="absolute left-1/2 -translate-x-1/2 -top-6 z-20">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button size="icon" aria-label="Abrir acciones rápidas" className="w-14 h-14 rounded-full border-4 border-background shadow-sm hover-scale">
+                        <Plus className="h-6 w-6" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent align="center" side="top" className="w-64 p-2 space-y-1">
+                      <Button asChild variant="outline" className="w-full justify-between">
+                        <Link to="/transacciones" aria-label="Crear nueva transacción" className="flex w-full items-center justify-between">
+                          <span className="text-sm">Crear nueva Transacción</span>
+                          <Wallet className="h-4 w-4 opacity-70" />
+                        </Link>
+                      </Button>
+                      <Button asChild variant="outline" className="w-full justify-between">
+                        <Link to="/ajustes/categorias" aria-label="Crear nueva categoría" className="flex w-full items-center justify-between">
+                          <span className="text-sm">Crear nueva Categoría</span>
+                          <Tag className="h-4 w-4 opacity-70" />
+                        </Link>
+                      </Button>
+                      <Button asChild variant="outline" className="w-full justify-between">
+                        <Link to="/ajustes/creditos" aria-label="Crear nuevo crédito" className="flex w-full items-center justify-between">
+                          <span className="text-sm">Crear nuevo Crédito</span>
+                          <CreditCard className="h-4 w-4 opacity-70" />
+                        </Link>
+                      </Button>
+                      <Button asChild variant="outline" className="w-full justify-between">
+                        <Link to="/ajustes/macros" aria-label="Crear nueva macro" className="flex w-full items-center justify-between">
+                          <span className="text-sm">Crear nueva Macro</span>
+                          <Zap className="h-4 w-4 opacity-70" />
+                        </Link>
+                      </Button>
+                    </PopoverContent>
+                  </Popover>
                 </div>
 
                 {/* Barra de navegación */}
-                <div className="relative flex items-center justify-between">
-                  <NavLink to="/macros" className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Macros" title="Macros">
-                    <Zap className="h-5 w-5" />
-                    <span className="text-[11px] leading-none">Macros</span>
+                <div className="grid grid-cols-5 items-center">
+                  <NavLink to="/" end className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Inicio" title="Inicio">
+                    <Home className="h-5 w-5" />
+                    <span className="text-[11px] leading-none">Inicio</span>
                   </NavLink>
                   <NavLink to="/transacciones" className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Transacciones" title="Transacciones">
                     <List className="h-5 w-5" />
                     <span className="text-[11px] leading-none">Movs</span>
                   </NavLink>
-                  {/* Espacio reservado para el botón Home centrado */}
-                  <div className="w-14 shrink-0" aria-hidden />
+                  {/* Espacio central reservado para el FAB */}
+                  <div aria-hidden />
+                  <NavLink to="/macros" className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Macros" title="Macros">
+                    <Zap className="h-5 w-5" />
+                    <span className="text-[11px] leading-none">Macros</span>
+                  </NavLink>
                   <NavLink to="/ajustes" className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Ajustes" title="Ajustes">
                     <Settings className="h-5 w-5" />
                     <span className="text-[11px] leading-none">Ajustes</span>
