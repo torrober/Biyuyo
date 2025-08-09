@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, NavLink, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link, NavLink } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -16,7 +16,7 @@ import CreditsSettings from "./pages/settings/Credits";
 import MacrosSettings from "./pages/settings/Macros";
 import BackupSettings from "./pages/settings/Backup";
 import { Home, Zap, List, Settings, Plus, Tag, CreditCard, Wallet } from "lucide-react";
-import ThemeToggle from "./components/ThemeToggle";
+import Header from "./components/Header";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 
@@ -30,13 +30,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <div className="min-h-screen flex flex-col">
-            <header className="sticky top-0 z-40 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-              <div className="container h-12 grid grid-cols-3 items-center">
-                <div />
-                <div className="justify-self-center font-semibold tracking-wide">Biyuyo</div>
-                <div className="justify-self-end"><ThemeToggle /></div>
-              </div>
-            </header>
+            <Header />
             <main className="flex-1 container py-6 pb-20">
               <Routes>
                 <Route path="/" element={<Index />} />
