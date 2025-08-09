@@ -83,23 +83,8 @@ const App = () => (
               </Popover>
             </div>
             <footer className="fixed bottom-0 inset-x-0 z-50 bg-background/90 backdrop-blur border-t">
-              <nav className="container relative pt-8 pb-2">
+              <nav className="container relative pt-6 pb-2">
                 {/* Botón de inicio central */}
-                <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-7 z-20">
-                  <NavLink 
-                    to="/" 
-                    end 
-                    className={({ isActive }) => 
-                      `pointer-events-auto flex items-center justify-center w-14 h-14
-                      rounded-full border-4 border-background shadow-sm
-                      ${isActive ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`
-                    } 
-                    aria-label="Dashboard" 
-                    title="Dashboard"
-                  >
-                    <Home className="h-6 w-6" />
-                  </NavLink>
-                </div>
 
                 {/* Barra de navegación */}
                 <div className="grid grid-cols-4 relative items-center">
@@ -107,8 +92,17 @@ const App = () => (
                     <Zap className="h-5 w-5" />
                     <span className="text-[11px] leading-none">Macros</span>
                   </NavLink>
-                  {/* Espacio central para el botón Home sobresaliente */}
-                  <div aria-hidden className="h-0" />
+                  <NavLink 
+                    to="/" 
+                    end 
+                    className={({ isActive }) => 
+                      `flex items-center justify-center -translate-y-3 z-20 w-14 h-14 rounded-full border-4 border-background shadow-sm ${isActive ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`
+                    }
+                    aria-label="Inicio" 
+                    title="Inicio"
+                  >
+                    <Home className="h-6 w-6" />
+                  </NavLink>
                   <NavLink to="/transacciones" className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Transacciones" title="Transacciones">
                     <List className="h-5 w-5" />
                     <span className="text-[11px] leading-none">Movs</span>
