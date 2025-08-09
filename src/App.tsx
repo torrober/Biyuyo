@@ -86,27 +86,33 @@ const App = () => (
               <nav className="container relative pt-6 pb-2">
                 {/* Botón de inicio central */}
 
-                {/* Barra de navegación */}
-                <div className="grid grid-cols-4 relative items-center">
-                  <NavLink to="/macros" className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Macros" title="Macros">
-                    <Zap className="h-5 w-5" />
-                    <span className="text-[11px] leading-none">Macros</span>
-                  </NavLink>
+                {/* Home centrado absolutamente */}
+                <div className="absolute left-1/2 -translate-x-1/2 top-0 -translate-y-3 z-20">
                   <NavLink 
                     to="/" 
                     end 
                     className={({ isActive }) => 
-                      `flex items-center justify-center -translate-y-3 z-20 w-14 h-14 rounded-full border-4 border-background shadow-sm ${isActive ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`
+                      `flex items-center justify-center w-14 h-14 rounded-full border-4 border-background shadow-sm ${isActive ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`
                     }
                     aria-label="Inicio" 
                     title="Inicio"
                   >
                     <Home className="h-6 w-6" />
                   </NavLink>
+                </div>
+
+                {/* Barra de navegación */}
+                <div className="relative flex items-center justify-between">
+                  <NavLink to="/macros" className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Macros" title="Macros">
+                    <Zap className="h-5 w-5" />
+                    <span className="text-[11px] leading-none">Macros</span>
+                  </NavLink>
                   <NavLink to="/transacciones" className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Transacciones" title="Transacciones">
                     <List className="h-5 w-5" />
                     <span className="text-[11px] leading-none">Movs</span>
                   </NavLink>
+                  {/* Espacio reservado para el botón Home centrado */}
+                  <div className="w-14 shrink-0" aria-hidden />
                   <NavLink to="/ajustes" className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Ajustes" title="Ajustes">
                     <Settings className="h-5 w-5" />
                     <span className="text-[11px] leading-none">Ajustes</span>
