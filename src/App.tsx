@@ -47,7 +47,7 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
-            <footer className="fixed bottom-0 inset-x-0 z-50 bg-background/90 backdrop-blur border-t">
+            <footer className="fixed bottom-0 inset-x-0 z-50 glass-bar border-t-[hsl(var(--fab-ring))]">
               <nav className="container relative pt-0 pb-1">
                 {/* Botón de inicio central */}
 
@@ -55,7 +55,7 @@ const App = () => (
                 <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 z-20">
                   <Popover>
                     <PopoverTrigger asChild>
-                      <Button size="icon" aria-label="Abrir acciones rápidas" className="w-16 h-16 rounded-full border-4 border-background shadow-sm hover-scale">
+                      <Button variant="ghost" size="icon" aria-label="Abrir acciones rápidas" className="fab-btn border-t-2 border-t-[hsl(var(--fab-ring))]">
                         <Plus className="h-7 w-7" />
                       </Button>
                     </PopoverTrigger>

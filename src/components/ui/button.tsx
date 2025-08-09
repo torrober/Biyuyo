@@ -42,9 +42,18 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
+    const classNameStr = typeof className === "string" ? className : ""
+    const isFab = classNameStr.includes("fab-btn")
+    const shouldApplyGlass = !isFab && variant !== "ghost" && variant !== "outline"
+    const shouldApplyCardGlass = !isFab && variant === "outline"
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(
+          buttonVariants({ variant, size }),
+          shouldApplyGlass && "btn-glass",
+          shouldApplyCardGlass && "glass-card btn-outline-glass",
+          className
+        )}
         ref={ref}
         {...props}
       />

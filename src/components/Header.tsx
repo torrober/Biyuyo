@@ -8,7 +8,7 @@ const Header = () => {
   const navigate = useNavigate();
 
   return (
-    <header className="sticky top-0 z-40 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+    <header className="sticky top-0 z-40 glass-bar border-b-[hsl(var(--fab-ring))]">
       <div className="container h-12 grid grid-cols-3 items-center">
         <div className="flex items-center">
           {location.pathname.includes('/ajustes/') && (

@@ -53,44 +53,96 @@ All colors MUST be HSL.
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* FAB variables for light mode (cool glass) */
+    --fab-size: 4rem; /* default compact size */
+    --fab-blur: 12px;
+    --fab-blur-strong: 28px;
+    --fab-alpha: 0.72; /* slightly stronger for light */
+    /* Light FAB in neutral gray */
+    --fab-bg: 0 0% 96%;         /* soft gray */
+    --fab-ring: 0 0% 72%;       /* gray rim */
+    --fab-glow: 0 0% 100%;      /* neutral highlight */
+    /* Glass bar tuning (light) */
+    --bar-blur: 20px;
+    --bar-alpha: 0.6;
+
+    /* Glass panel (cards) tuning - light */
+    --panel-bg: 220 25% 96%;
+    --panel-alpha: 0.65;
+    --panel-blur: 14px;
+    --panel-stroke: 220 18% 78%;
+    /* Marine gradient for borders (light) */
+    --card-stroke-start: 220 32% 82%;
+    --card-stroke-end: 220 22% 68%;
+    /* Light canvas gradient */
+    --canvas-from: 220 35% 98%;
+    --canvas-to: 220 24% 88%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    /* Dark palette tuned closer to true black */
+    --background: 240 6% 6%;             /* ≈ #0f1113 */
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
+    --card: 240 6% 8%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 222.2 84% 4.9%;
+    --popover: 240 6% 8%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
-    --secondary: 217.2 32.6% 17.5%;
+    --secondary: 240 5% 12%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 240 5% 12%;
+    --muted-foreground: 0 0% 70%;
 
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 240 5% 12%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
+    --border: 240 4% 18%;
+    --input: 240 4% 18%;
+    --ring: 210 15% 85%;
+    --sidebar-background: 240 6% 8%;
+    --sidebar-foreground: 0 0% 96%;
     --sidebar-primary: 224.3 76.3% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-accent: 240 5% 12%;
+    --sidebar-accent-foreground: 0 0% 96%;
+    --sidebar-border: 240 4% 18%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* FAB variables for dark mode */
+    --fab-size: 4rem; /* default compact size */
+    --fab-blur: 12px;
+    --fab-blur-strong: 28px;
+    --fab-alpha: 0.3; /* subtler translucency in dark */
+    --fab-bg: 240 6% 8%;
+    --fab-ring: 220 50% 20%;
+    --fab-glow: 224 80% 60%;
+    /* Glass bar tuning (dark) */
+    --bar-blur: 22px;
+    --bar-alpha: 0.22;
+
+    /* Glass panel (cards) tuning - dark */
+    /* Dark navy glass */
+    --panel-bg: 224 20% 10%;
+    --panel-alpha: 0.16;
+    --panel-blur: 16px;
+    --panel-stroke: 220 20% 24%;
+    /* Marine gradient for borders (dark) */
+    --card-stroke-start: 220 55% 28%;
+    --card-stroke-end: 220 35% 16%;
+
+    /* Dark canvas gradient */
+    --canvas-from-dark: 224 24% 14%; /* muted navy */
+    --canvas-to-dark: 240 6% 6%;    /* near black */
   }
 }
 
@@ -101,6 +153,15 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    background-image:
+      radial-gradient(140% 100% at 50% -20%, hsl(var(--canvas-from)) 0%, hsl(var(--canvas-to)) 60%, hsl(var(--background)) 100%),
+      radial-gradient(60% 40% at 100% -10%, hsl(var(--fab-glow) / 0.08) 0%, transparent 60%);
+    background-attachment: fixed;
+  }
+  .dark body {
+    background-image:
+      radial-gradient(140% 100% at 50% -20%, hsl(var(--canvas-from-dark)) 0%, hsl(var(--canvas-to-dark)) 70%, hsl(var(--background)) 100%);
+    background-attachment: fixed;
   }
 }
 
@@ -129,5 +190,163 @@ All colors MUST be HSL.
   }
   .pulse {
     @apply animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite];
+  }
+  /* Glass effect overlay for buttons while preserving variant background colors */
+  .btn-glass {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    -webkit-backdrop-filter: saturate(130%) blur(6px);
+    backdrop-filter: saturate(130%) blur(6px);
+    box-shadow:
+      inset 0 1px 0 hsl(var(--fab-ring) / 0.25),
+      inset 0 -1px 0 hsl(var(--fab-ring) / 0.15);
+  }
+  /* Gloss overlay removed to avoid shiny effect */
+  /* subtle outer stroke for outline buttons */
+  .btn-outline-glass {
+    box-shadow:
+      0 0 0 1px hsl(var(--card-stroke-start) / 0.28),
+      inset 0 1px 0 hsl(var(--fab-ring) / 0.35),
+      inset 0 -1px 0 hsl(var(--fab-ring) / 0.18),
+      0 10px 26px hsl(0 0% 0% / 0.10);
+  }
+  .dark .btn-outline-glass {
+    box-shadow:
+      0 0 0 1px hsl(var(--card-stroke-start) / 0.45),
+      inset 0 2px 2px hsl(var(--fab-ring) / 0.28),
+      inset 0 -2px 2px hsl(var(--fab-ring) / 0.2),
+      0 12px 32px hsl(0 0% 0% / 0.35);
+  }
+  /* removed glass-btn styles to restore original button colors */
+  /* (Reverted) removed glass-button styles */
+  /* Floating Action Button style (dark: near-black with subtle blue rim, light: inverted) */
+  .fab-btn {
+    @apply relative grid place-items-center text-foreground transition-transform duration-200;
+    /* Force perfect circle and size */
+    width: var(--fab-size) !important;
+    height: var(--fab-size) !important;
+    border-radius: 9999px !important;
+    background: transparent;
+    box-shadow: 0 18px 40px hsl(0 0% 0% / 0.35), inset 0 0 0 1px hsl(var(--foreground) / 0.04);
+    border-top: 2px solid hsl(var(--fab-ring));
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+  }
+
+  /* strong backdrop blur layer (bottom) */
+  .fab-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background: hsl(var(--fab-bg) / var(--fab-alpha));
+    -webkit-backdrop-filter: saturate(180%) blur(var(--fab-blur-strong));
+    backdrop-filter: saturate(180%) blur(var(--fab-blur-strong));
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* gradient halo (middle) */
+  .fab-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background: radial-gradient(120% 120% at 50% 0%, hsl(var(--fab-glow) / 0.35) 0%, hsl(var(--fab-ring) / 0.4) 42%, transparent 66%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* keep icon/content above effects */
+  .fab-btn > * { position: relative; z-index: 2; }
+  .fab-btn:hover { @apply scale-105; }
+
+  /* Glass background utility to reuse FAB background in bars */
+  .glass-bar {
+    /* Base color + gradient overlay */
+    background-color: hsl(var(--fab-bg) / var(--bar-alpha));
+    -webkit-backdrop-filter: saturate(180%) blur(var(--bar-blur));
+    backdrop-filter: saturate(180%) blur(var(--bar-blur));
+    background-image: linear-gradient(
+      to bottom,
+      hsl(var(--fab-ring) / 0.35) 0%,
+      hsl(var(--fab-bg) / 0.35) 100%
+    );
+    /* subtle inner strokes both edges for glassy look */
+    box-shadow:
+      inset 0 1px 0 hsl(var(--fab-ring) / 0.45),
+      inset 0 -1px 0 hsl(var(--fab-ring) / 0.25),
+      0 8px 30px hsl(0 0% 0% / 0.08);
+  }
+
+  /* Dark-mode overrides: no background gradients, inner shadows, gradient borders */
+  .dark .glass-bar {
+    background-color: hsl(var(--panel-bg) / var(--bar-alpha));
+    background-image: none;
+    -webkit-backdrop-filter: saturate(140%) blur(var(--bar-blur));
+    backdrop-filter: saturate(140%) blur(var(--bar-blur));
+    /* inner strokes for glass edge */
+    box-shadow:
+      inset 0 1px 0 hsl(var(--fab-ring) / 0.28),
+      inset 0 -1px 0 hsl(var(--fab-ring) / 0.2),
+      0 10px 28px hsl(0 0% 0% / 0.35);
+    /* gradient border applied to whichever side has width */
+    border-image: linear-gradient(90deg,
+      hsl(var(--card-stroke-start) / 0.9),
+      hsl(var(--card-stroke-end) / 0.55)
+    ) 1;
+  }
+
+  /* Glass card/panel surface */
+  .glass-card {
+    position: relative;
+    border-width: 1px;
+    border-color: transparent; /* we draw it via gradient */
+    /* Two-layer background: inner panel (padding-box) + gradient border (border-box) */
+    background:
+      linear-gradient(180deg,
+        hsl(var(--panel-bg) / calc(var(--panel-alpha) + 0.06)) 0%,
+        hsl(var(--panel-bg) / var(--panel-alpha)) 100%
+      ) padding-box,
+      linear-gradient(180deg,
+        hsl(var(--card-stroke-start) / 0.7),
+        hsl(var(--card-stroke-end) / 0.7)
+      ) border-box;
+    -webkit-backdrop-filter: saturate(160%) blur(var(--panel-blur));
+    backdrop-filter: saturate(160%) blur(var(--panel-blur));
+    box-shadow:
+      inset 0 1px 0 hsl(var(--fab-ring) / 0.35),
+      inset 0 -1px 0 hsl(var(--fab-ring) / 0.18),
+      0 10px 30px hsl(0 0% 0% / 0.12);
+  }
+  .dark .glass-card {
+    border-width: 2px;
+    background:
+      hsl(var(--panel-bg) / var(--panel-alpha)) padding-box,
+      linear-gradient(180deg,
+        hsl(var(--card-stroke-start) / 0.9) 0%,
+        hsl(var(--card-stroke-end) / 0.6) 100%
+      ) border-box;
+    -webkit-backdrop-filter: saturate(140%) blur(var(--panel-blur));
+    backdrop-filter: saturate(140%) blur(var(--panel-blur));
+    /* stronger inner shadow for depth */
+    box-shadow:
+      inset 0 2px 3px hsl(var(--fab-ring) / 0.28),
+      inset 0 -2px 3px hsl(var(--fab-ring) / 0.22),
+      0 16px 40px hsl(0 0% 0% / 0.45);
+  }
+  .dark .glass-card::after { display: none; }
+  /* Optional corner glow to emphasize marine tint */
+  .glass-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(60% 40% at 20% 10%, hsl(var(--fab-glow) / 0.12), transparent 60%),
+                radial-gradient(60% 40% at 80% 0%, hsl(var(--fab-glow) / 0.06), transparent 66%);
+    mix-blend-mode: screen;
   }
 }
