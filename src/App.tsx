@@ -62,19 +62,19 @@ const App = () => (
                     </Link>
                   </Button>
                   <Button asChild variant="outline" className="w-full justify-between">
-                    <Link to="/ajustes" aria-label="Crear nueva categoría" className="flex w-full items-center justify-between">
+                    <Link to="/ajustes/categorias" aria-label="Crear nueva categoría" className="flex w-full items-center justify-between">
                       <span className="text-sm">Crear nueva Categoría</span>
                       <Tag className="h-4 w-4 opacity-70" />
                     </Link>
                   </Button>
                   <Button asChild variant="outline" className="w-full justify-between">
-                    <Link to="/ajustes" aria-label="Crear nuevo crédito" className="flex w-full items-center justify-between">
+                    <Link to="/ajustes/creditos" aria-label="Crear nuevo crédito" className="flex w-full items-center justify-between">
                       <span className="text-sm">Crear nuevo Crédito</span>
                       <CreditCard className="h-4 w-4 opacity-70" />
                     </Link>
                   </Button>
                   <Button asChild variant="outline" className="w-full justify-between">
-                    <Link to="/macros" aria-label="Crear nueva macro" className="flex w-full items-center justify-between">
+                    <Link to="/ajustes/macros" aria-label="Crear nueva macro" className="flex w-full items-center justify-between">
                       <span className="text-sm">Crear nueva Macro</span>
                       <Zap className="h-4 w-4 opacity-70" />
                     </Link>
