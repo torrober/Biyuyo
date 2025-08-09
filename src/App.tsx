@@ -56,7 +56,7 @@ const App = () => (
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button variant="ghost" size="icon" aria-label="Abrir acciones rápidas" className="fab-btn border-t-2 border-t-[hsl(var(--fab-ring))]">
-                        <Plus className="h-7 w-7" />
+                        <Plus className="h-12 w-12" />
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent align="center" side="top" className="w-64 p-2 space-y-1">
