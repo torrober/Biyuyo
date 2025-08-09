@@ -30,11 +30,21 @@ const CreditsSettings = () => {
             </div>
             <div className="space-y-2">
               <Label>Total</Label>
-              <Input type="number" value={cre.total} onChange={(e) => setCre((s) => ({ ...s, total: Number(e.target.value) }))} />
+              <Input
+                type="number"
+                inputMode="decimal"
+                value={cre.total === 0 ? "" : cre.total}
+                onChange={(e) => setCre((s) => ({ ...s, total: Number(e.target.value) || 0 }))}
+              />
             </div>
             <div className="space-y-2">
               <Label>Cuota mensual</Label>
-              <Input type="number" value={cre.monthlyInstallment} onChange={(e) => setCre((s) => ({ ...s, monthlyInstallment: Number(e.target.value) }))} />
+              <Input
+                type="number"
+                inputMode="decimal"
+                value={cre.monthlyInstallment === 0 ? "" : cre.monthlyInstallment}
+                onChange={(e) => setCre((s) => ({ ...s, monthlyInstallment: Number(e.target.value) || 0 }))}
+              />
             </div>
             <div className="space-y-2">
               <Label>Día de pago</Label>

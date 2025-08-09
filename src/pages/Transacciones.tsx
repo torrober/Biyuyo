@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Plus, ChevronRight } from "lucide-react";
+import { Plus, ChevronRight, ArrowUpRight, ArrowDownRight } from "lucide-react";
 
 const currency = (n: number) => n.toLocaleString("es-CO", { style: "currency", currency: "COP" });
 
@@ -133,7 +133,12 @@ const Transacciones = () => {
 
                   <div>
                     <Label>Monto</Label>
-                    <Input type="number" value={newTx.amount} onChange={(e) => setNewTx((s) => ({ ...s, amount: Number(e.target.value) }))} />
+                    <Input
+                      type="number"
+                      inputMode="decimal"
+                      value={newTx.amount === 0 ? "" : newTx.amount}
+                      onChange={(e) => setNewTx((s) => ({ ...s, amount: Number(e.target.value) || 0 }))}
+                    />
                   </div>
 
                   <div>
@@ -182,7 +187,12 @@ const Transacciones = () => {
 
                   <div>
                     <Label>Monto</Label>
-                    <Input type="number" value={newTx.amount} onChange={(e) => setNewTx((s) => ({ ...s, amount: Number(e.target.value) }))} />
+                    <Input
+                      type="number"
+                      inputMode="decimal"
+                      value={newTx.amount === 0 ? "" : newTx.amount}
+                      onChange={(e) => setNewTx((s) => ({ ...s, amount: Number(e.target.value) || 0 }))}
+                    />
                   </div>
 
                   <div>
@@ -213,21 +223,40 @@ const Transacciones = () => {
           </CardHeader>
           <CardContent className="grid gap-4">
             {filtered.slice(0, 4).map((t) => {
-              const acc = accounts.find((a) => a.id === t.accountId)?.name ?? "";
-              const cat = categories.find((c) => c.id === t.categoryId)?.name ?? "";
               const date = new Date(t.date);
               const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear().toString().slice(-2)} - ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+              const title = t.description || "Transacción";
               
               return (
-                <Card key={t.id} className="cursor-pointer hover:bg-accent/50 transition-colors" onClick={() => setEditing(t)}>
+                <Card
+                  key={t.id}
+                  className="cursor-pointer transition-colors rounded-xl border"
+                  onClick={() => setEditing(t)}
+                >
                   <CardHeader className="py-3">
-                    <CardTitle className={t.type === "expense" ? "text-red-500" : "text-green-500"}>
-                      {t.type === "expense" ? `- ${currency(t.amount)}` : `+ ${currency(t.amount)}`}
-                    </CardTitle>
+                    <div className="flex items-start gap-3 items-center">
+                      <div
+                        className={`${
+                          t.type === "income"
+                            ? "bg-green-100 dark:bg-green-900"
+                            : "bg-red-100 dark:bg-red-900"
+                        } rounded-md w-9 h-9 flex items-center justify-center shrink-0`}
+                      >
+                        {t.type === "income" ? (
+                          <ArrowUpRight className="h-5 w-5 text-green-700 dark:text-green-300" />
+                        ) : (
+                          <ArrowDownRight className="h-5 w-5 text-red-700 dark:text-red-300" />
+                        )}
+                      </div>
+                      <div className="flex flex-col min-w-0">
+                        <span className="font-semibold truncate">{title}</span>
+                        <span className={`font-semibold ${t.type === "expense" ? "text-red-700 dark:text-red-200" : "text-green-800 dark:text-green-200"}`}>
+                          {t.type === "expense" ? `- ${currency(t.amount)}` : `+ ${currency(t.amount)}`}
+                        </span>
+                        <span className="text-sm text-muted-foreground">{formattedDate}</span>
+                      </div>
+                    </div>
                   </CardHeader>
-                  <CardContent className="py-2">
-                    <p className="text-sm text-muted-foreground">{formattedDate}</p>
-                  </CardContent>
                 </Card>
               );
             })}
@@ -260,7 +289,12 @@ const Transacciones = () => {
               </div>
               <div>
                 <Label>Monto</Label>
-                <Input type="number" value={editing.amount} onChange={(e) => setEditing({ ...editing, amount: Number(e.target.value) })} />
+                <Input
+                  type="number"
+                  inputMode="decimal"
+                  value={editing.amount === 0 ? "" : editing.amount}
+                  onChange={(e) => setEditing({ ...editing, amount: Number(e.target.value) || 0 })}
+                />
               </div>
               <div>
                 <Label>Fecha</Label>

@@ -52,7 +52,12 @@ const MacrosSettings = () => {
             </div>
             <div className="space-y-2">
               <Label>Monto</Label>
-              <Input type="number" value={macro.amount} onChange={(e) => setMacro((s) => ({ ...s, amount: Number(e.target.value) }))} />
+              <Input
+                type="number"
+                inputMode="decimal"
+                value={macro.amount === 0 ? "" : macro.amount}
+                onChange={(e) => setMacro((s) => ({ ...s, amount: Number(e.target.value) || 0 }))}
+              />
             </div>
             <div className="space-y-2">
               <Label>Cuenta</Label>

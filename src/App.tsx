@@ -48,15 +48,15 @@ const App = () => (
               </Routes>
             </main>
             <footer className="fixed bottom-0 inset-x-0 z-50 bg-background/90 backdrop-blur border-t">
-              <nav className="container relative pt-6 pb-2">
+              <nav className="container relative pt-0 pb-1">
                 {/* Botón de inicio central */}
 
                 {/* Home centrado absolutamente */}
-                <div className="absolute left-1/2 -translate-x-1/2 -top-6 z-20">
+                <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 z-20">
                   <Popover>
                     <PopoverTrigger asChild>
-                      <Button size="icon" aria-label="Abrir acciones rápidas" className="w-14 h-14 rounded-full border-4 border-background shadow-sm hover-scale">
-                        <Plus className="h-6 w-6" />
+                      <Button size="icon" aria-label="Abrir acciones rápidas" className="w-16 h-16 rounded-full border-4 border-background shadow-sm hover-scale">
+                        <Plus className="h-7 w-7" />
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent align="center" side="top" className="w-64 p-2 space-y-1">
@@ -89,22 +89,22 @@ const App = () => (
                 </div>
 
                 {/* Barra de navegación */}
-                <div className="grid grid-cols-5 items-center">
-                  <NavLink to="/" end className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Inicio" title="Inicio">
+                <div className="grid grid-cols-5 items-center gap-6">
+                  <NavLink to="/" end className={({ isActive }) => `flex flex-col items-center justify-center py-1.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Inicio" title="Inicio">
                     <Home className="h-5 w-5" />
                     <span className="text-[11px] leading-none">Inicio</span>
                   </NavLink>
-                  <NavLink to="/transacciones" className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Transacciones" title="Transacciones">
+                  <NavLink to="/transacciones" className={({ isActive }) => `flex flex-col items-center justify-center py-1.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Transacciones" title="Transacciones">
                     <List className="h-5 w-5" />
                     <span className="text-[11px] leading-none">Movs</span>
                   </NavLink>
                   {/* Espacio central reservado para el FAB */}
                   <div aria-hidden />
-                  <NavLink to="/macros" className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Macros" title="Macros">
+                  <NavLink to="/macros" className={({ isActive }) => `flex flex-col items-center justify-center py-1.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Macros" title="Macros">
                     <Zap className="h-5 w-5" />
                     <span className="text-[11px] leading-none">Macros</span>
                   </NavLink>
-                  <NavLink to="/ajustes" className={({ isActive }) => `flex flex-col items-center justify-center py-2.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Ajustes" title="Ajustes">
+                  <NavLink to="/ajustes" className={({ isActive }) => `flex flex-col items-center justify-center py-1.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Ajustes" title="Ajustes">
                     <Settings className="h-5 w-5" />
                     <span className="text-[11px] leading-none">Ajustes</span>
                   </NavLink>

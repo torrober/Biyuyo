@@ -116,8 +116,8 @@ const Macros = () => {
             <Input
               type="number"
               inputMode="decimal"
-              value={pending?.amount ?? 0}
-              onChange={(e) => setPending((p) => (p ? { ...p, amount: Number(e.target.value) } : p))}
+              value={pending?.amount === 0 ? "" : pending?.amount ?? ""}
+              onChange={(e) => setPending((p) => (p ? { ...p, amount: Number(e.target.value) || 0 } : p))}
             />
           </div>
           <DialogFooter>

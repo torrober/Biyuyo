@@ -1,10 +1,13 @@
 import { Helmet } from "react-helmet-async";
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { useFinance, currentMonthKey } from "@/store/finance";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
+import { Zap, Pencil, Plus } from "lucide-react";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   PieChart,
   Pie,
@@ -12,6 +15,7 @@ import {
   ResponsiveContainer,
   Tooltip as ReTooltip,
 } from "recharts";
+import { Hourglass } from "lucide-react";
 
 const currency = (n: number) => n.toLocaleString("es-CO", { style: "currency", currency: "COP" });
 
@@ -21,6 +25,7 @@ const Dashboard = () => {
     categories,
     recurrings,
     credits,
+    macroGroups,
     totalSpendableBalance,
     monthlyObligationsTotal,
     monthlyObligationsRemaining,
@@ -31,6 +36,7 @@ const Dashboard = () => {
     payCreditInstallment,
     updateCredit,
     deleteTransaction,
+    triggerMacro,
   } = useFinance();
   const { toast } = useToast();
 
@@ -115,6 +121,48 @@ const Dashboard = () => {
     });
   };
 
+  // Quick Macros state (persisted locally)
+  const [quickMacroIds, setQuickMacroIds] = useState<string[]>(() => {
+    try {
+      const raw = localStorage.getItem("quickMacroIds");
+      const parsed = raw ? (JSON.parse(raw) as string[]) : [];
+      return Array.isArray(parsed) ? parsed.slice(0, 4) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem("quickMacroIds", JSON.stringify(quickMacroIds.slice(0, 4)));
+  }, [quickMacroIds]);
+
+  const allMacros = useMemo(() => {
+    return macroGroups.flatMap((g) => g.macros.map((m) => ({ ...m, groupId: g.id, groupName: g.name })));
+  }, [macroGroups]);
+
+  const selectedMacros = useMemo(() => {
+    return quickMacroIds
+      .map((id) => allMacros.find((m) => m.id === id))
+      .filter((x): x is typeof allMacros[number] => Boolean(x));
+  }, [quickMacroIds, allMacros]);
+
+  const [isQuickDialogOpen, setIsQuickDialogOpen] = useState(false);
+
+  const toggleQuickMacro = (id: string) => {
+    setQuickMacroIds((prev) => {
+      if (prev.includes(id)) return prev.filter((x) => x !== id);
+      if (prev.length >= 4) return prev; // limit
+      return [...prev, id];
+    });
+  };
+
+  const runMacro = async (macroId: string, groupId: string) => {
+    const txId = triggerMacro(macroId, groupId);
+    if (txId) {
+      toast({ title: "Macro ejecutada", description: "Se creó una transacción." });
+    }
+  };
+
   return (
     <div className="space-y-6 animate-enter">
       <Helmet>
@@ -146,7 +194,7 @@ const Dashboard = () => {
             </div>
 
             <div className="grid gap-2">
-              <div className="grid grid-cols-[1fr,auto] items-center gap-3 p-2 rounded-lg border bg-card/50">
+              <div className="grid grid-cols-[1fr,auto] items-center gap-3 p-2 rounded-lg border bg-green-100 dark:bg-green-900">
                 <div className="flex items-center gap-2">
                   <div className="h-2 w-2 rounded-full bg-green-500 shrink-0" />
                   <p className="text-xs font-medium truncate">Ingresos del Mes</p>
@@ -156,7 +204,7 @@ const Dashboard = () => {
                 </p>
               </div>
 
-              <div className="grid grid-cols-[1fr,auto] items-center gap-3 p-2 rounded-lg border bg-card/50">
+              <div className="grid grid-cols-[1fr,auto] items-center gap-3 p-2 rounded-lg border bg-red-100 dark:bg-red-900">
                 <div className="flex items-center gap-2">
                   <div className="h-2 w-2 rounded-full bg-red-500 shrink-0" />
                   <p className="text-xs font-medium truncate">Gastos Realizados</p>
@@ -166,9 +214,10 @@ const Dashboard = () => {
                 </p>
               </div>
 
-              <div className="grid grid-cols-[1fr,auto] items-center gap-3 p-2 rounded-lg border bg-card/50">
+              <div className="grid grid-cols-[1fr,auto] items-center gap-3 p-2 rounded-lg border bg-yellow-100 dark:bg-yellow-900">
                 <div className="flex items-center gap-2">
-                  <div className="h-2 w-2 rounded-full bg-yellow-500 shrink-0" />
+                  <div className="h-2 w-2 rounded-full bg-yellow-500 shrink-0">
+                  </div>
                   <p className="text-xs font-medium truncate">Gastos Futuros</p>
                 </div>
                 <p className="text-sm font-medium text-yellow-600 dark:text-yellow-400 tabular-nums">
@@ -179,6 +228,84 @@ const Dashboard = () => {
           </div>
           </CardContent>
         </Card>
+
+      {/* Macros rápidas */}
+      <Card>
+        <CardHeader className="pb-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Zap className="h-4 w-4" />
+              <CardTitle>Registro Rápido</CardTitle>
+            </div>
+            <Button variant="ghost" size="icon" onClick={() => setIsQuickDialogOpen(true)} aria-label="Editar macros rápidas">
+              <Pencil className="h-4 w-4" />
+            </Button>
+          </div>
+          <p className="text-sm text-muted-foreground">Registra gastos frecuentes con un solo clic.</p>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {Array.from({ length: 4 }).map((_, idx) => {
+              const macro = selectedMacros[idx];
+              if (macro) {
+                return (
+                  <Button
+                    key={macro.id}
+                    variant="outline"
+                    className="h-20 rounded-xl flex flex-col items-center justify-center gap-1"
+                    onClick={() => runMacro(macro.id, macro.groupId)}
+                  >
+                    <span className="font-semibold truncate max-w-[9rem]">{macro.emoji ? `${macro.emoji} ` : ""}{macro.name}</span>
+                    <span className="text-xs text-muted-foreground tabular-nums">{currency(macro.amount)}</span>
+                  </Button>
+                );
+              }
+              return (
+                <Button
+                  key={`empty-${idx}`}
+                  variant="outline"
+                  className="h-20 rounded-xl flex items-center justify-center border-dashed"
+                  onClick={() => setIsQuickDialogOpen(true)}
+                  aria-label="Agregar macro rápida"
+                >
+                  <Plus className="h-6 w-6" />
+                </Button>
+              );
+            })}
+          </div>
+          {allMacros.length === 0 && (
+            <p className="mt-2 text-xs text-muted-foreground">No hay macros. Crea algunas en Ajustes.</p>
+          )}
+        </CardContent>
+      </Card>
+
+      <Dialog open={isQuickDialogOpen} onOpenChange={setIsQuickDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Selecciona hasta 4 macros</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-2 max-h-72 overflow-auto pr-1">
+            {allMacros.map((m) => {
+              const selected = quickMacroIds.includes(m.id);
+              const disabled = !selected && quickMacroIds.length >= 4;
+              return (
+                <label key={m.id} className={`flex items-center justify-between rounded-md border p-2 ${disabled ? "opacity-60" : ""}`}>
+                  <div className="flex items-center gap-3">
+                    <Checkbox checked={selected} onCheckedChange={() => toggleQuickMacro(m.id)} disabled={disabled} />
+                    <div className="flex flex-col">
+                      <span className="font-medium">{m.emoji ? `${m.emoji} ` : ""}{m.name}</span>
+                      <span className="text-xs text-muted-foreground">Grupo: {m.groupName}</span>
+                    </div>
+                  </div>
+                </label>
+              );
+            })}
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setIsQuickDialogOpen(false)}>Listo</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
