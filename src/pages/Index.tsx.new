@@ -132,51 +132,49 @@ const Dashboard = () => {
           <CardTitle>Resumen mensual</CardTitle>
         </CardHeader>
         <CardContent className="space-y-8">
-          <div className="grid gap-8">
-            <div className="space-y-2">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-baseline gap-2">
-                <p className="text-base sm:text-sm text-muted-foreground">Balance General Total</p>
-                <p className="text-2xl sm:text-xl font-medium">{currency(kpis.saldo)}</p>
-              </div>
-              <Progress className="h-2" value={0} />
+          <div className="space-y-2">
+            <div className="flex justify-between items-baseline">
+              <p className="text-sm text-muted-foreground">Balance General Total</p>
+              <p className="text-xl font-medium">{currency(kpis.saldo)}</p>
+            </div>
+            <Progress className="h-2" value={0} />
+          </div>
+
+          <div>
+            <div className="flex justify-between items-baseline mb-6">
+              <p className="text-sm text-muted-foreground">Disponible este mes</p>
+              <p className="text-4xl font-bold">{currency(kpis.disponible)}</p>
             </div>
 
-            <div>
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-baseline gap-2 mb-6">
-                <p className="text-base sm:text-sm text-muted-foreground">Disponible este mes</p>
-                <p className="text-4xl font-bold">{currency(kpis.disponible)}</p>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between gap-4 p-3 rounded-lg border bg-card/50">
+                <div className="flex items-center gap-3">
+                  <div className="h-2 w-2 rounded-full bg-green-500" />
+                  <p className="text-sm font-medium">Ingresos del Mes</p>
+                </div>
+                <p className="font-medium text-green-600 dark:text-green-400">
+                  {currency(0.00)}
+                </p>
               </div>
 
-              <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-lg border bg-card/50">
-                  <div className="flex items-center gap-3">
-                    <div className="h-2 w-2 rounded-full bg-green-500" />
-                    <p className="text-base sm:text-sm font-medium">Ingresos del Mes</p>
-                  </div>
-                  <p className="text-lg sm:text-base font-medium text-green-600 dark:text-green-400">
-                    {currency(0.00)}
-                  </p>
+              <div className="flex items-center justify-between gap-4 p-3 rounded-lg border bg-card/50">
+                <div className="flex items-center gap-3">
+                  <div className="h-2 w-2 rounded-full bg-red-500" />
+                  <p className="text-sm font-medium">Gastos Realizados</p>
                 </div>
+                <p className="font-medium text-red-600 dark:text-red-400">
+                  {currency(expensesByCategory(month).reduce((a, b) => a + b.total, 0))}
+                </p>
+              </div>
 
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-lg border bg-card/50">
-                  <div className="flex items-center gap-3">
-                    <div className="h-2 w-2 rounded-full bg-red-500" />
-                    <p className="text-base sm:text-sm font-medium">Gastos Realizados</p>
-                  </div>
-                  <p className="text-lg sm:text-base font-medium text-red-600 dark:text-red-400">
-                    {currency(expensesByCategory(month).reduce((a, b) => a + b.total, 0))}
-                  </p>
+              <div className="flex items-center justify-between gap-4 p-3 rounded-lg border bg-card/50">
+                <div className="flex items-center gap-3">
+                  <div className="h-2 w-2 rounded-full bg-yellow-500" />
+                  <p className="text-sm font-medium">Gastos Futuros</p>
                 </div>
-
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-lg border bg-card/50">
-                  <div className="flex items-center gap-3">
-                    <div className="h-2 w-2 rounded-full bg-yellow-500" />
-                    <p className="text-base sm:text-sm font-medium">Gastos Futuros</p>
-                  </div>
-                  <p className="text-lg sm:text-base font-medium text-yellow-600 dark:text-yellow-400">
-                    {currency(kpis.obligaciones)}
-                  </p>
-                </div>
+                <p className="font-medium text-yellow-600 dark:text-yellow-400">
+                  {currency(kpis.obligaciones)}
+                </p>
               </div>
             </div>
           </div>

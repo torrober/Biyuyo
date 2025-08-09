@@ -21,20 +21,20 @@ const RecurringsSettings = () => {
       <Card>
         <CardHeader><CardTitle>Pagos recurrentes</CardTitle></CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-5 gap-3">
-            <div>
+          <div className="space-y-4">
+            <div className="space-y-2">
               <Label>Nombre</Label>
               <Input value={rec.name} onChange={(e) => setRec((s) => ({ ...s, name: e.target.value }))} />
             </div>
-            <div>
+            <div className="space-y-2">
               <Label>Monto</Label>
               <Input type="number" value={rec.amount} onChange={(e) => setRec((s) => ({ ...s, amount: Number(e.target.value) }))} />
             </div>
-            <div>
-              <Label>Día</Label>
+            <div className="space-y-2">
+              <Label>Día de pago</Label>
               <Input type="number" value={rec.dueDay} onChange={(e) => setRec((s) => ({ ...s, dueDay: Number(e.target.value) }))} />
             </div>
-            <div>
+            <div className="space-y-2">
               <Label>Cuenta</Label>
               <Select value={rec.accountId} onValueChange={(v) => setRec((s) => ({ ...s, accountId: v }))}>
                 <SelectTrigger><SelectValue placeholder="Cuenta" /></SelectTrigger>
@@ -43,7 +43,7 @@ const RecurringsSettings = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div>
+            <div className="space-y-2">
               <Label>Categoría</Label>
               <Select value={(rec.categoryId || "none")} onValueChange={(v) => setRec((s) => ({ ...s, categoryId: v === "none" ? "" : v }))}>
                 <SelectTrigger><SelectValue placeholder="Categoría" /></SelectTrigger>
@@ -53,8 +53,19 @@ const RecurringsSettings = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="col-span-5">
-              <Button onClick={() => rec.name && rec.accountId && addRecurring({ name: rec.name, amount: rec.amount, dueDay: rec.dueDay, accountId: rec.accountId, categoryId: rec.categoryId || null })}>Agregar</Button>
+            <div>
+              <Button 
+                className="w-full"
+                onClick={() => rec.name && rec.accountId && addRecurring({ 
+                  name: rec.name, 
+                  amount: rec.amount, 
+                  dueDay: rec.dueDay, 
+                  accountId: rec.accountId, 
+                  categoryId: rec.categoryId || null 
+                })}
+              >
+                Agregar
+              </Button>
             </div>
           </div>
           <ul className="space-y-2">

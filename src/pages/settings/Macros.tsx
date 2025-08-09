@@ -22,18 +22,18 @@ const MacrosSettings = () => {
       <Card>
         <CardHeader><CardTitle>Macros</CardTitle></CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-3 gap-3">
-            <div>
+          <div className="space-y-4">
+            <div className="space-y-2">
               <Label>Nombre del grupo</Label>
               <Input value={grp.name} onChange={(e) => setGrp({ name: e.target.value })} />
             </div>
-            <div className="flex items-end">
-              <Button onClick={() => grp.name && addMacroGroup({ name: grp.name, macros: [] })}>Agregar grupo</Button>
+            <div>
+              <Button className="w-full" onClick={() => grp.name && addMacroGroup({ name: grp.name, macros: [] })}>Agregar grupo</Button>
             </div>
-          </div>
 
-          <div className="grid grid-cols-6 gap-3">
-            <div className="col-span-2">
+            <div className="border-t pt-4" />
+
+            <div className="space-y-2">
               <Label>Grupo</Label>
               <Select value={macro.groupId} onValueChange={(v) => setMacro((s) => ({ ...s, groupId: v }))}>
                 <SelectTrigger><SelectValue placeholder="Grupo" /></SelectTrigger>
@@ -42,19 +42,19 @@ const MacrosSettings = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div>
+            <div className="space-y-2">
               <Label>Emoji</Label>
               <Input value={macro.emoji} onChange={(e) => setMacro((s) => ({ ...s, emoji: e.target.value }))} placeholder="☕" />
             </div>
-            <div>
+            <div className="space-y-2">
               <Label>Nombre</Label>
               <Input value={macro.name} onChange={(e) => setMacro((s) => ({ ...s, name: e.target.value }))} />
             </div>
-            <div>
+            <div className="space-y-2">
               <Label>Monto</Label>
               <Input type="number" value={macro.amount} onChange={(e) => setMacro((s) => ({ ...s, amount: Number(e.target.value) }))} />
             </div>
-            <div>
+            <div className="space-y-2">
               <Label>Cuenta</Label>
               <Select value={macro.accountId} onValueChange={(v) => setMacro((s) => ({ ...s, accountId: v }))}>
                 <SelectTrigger><SelectValue placeholder="Cuenta" /></SelectTrigger>
@@ -63,7 +63,7 @@ const MacrosSettings = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div>
+            <div className="space-y-2">
               <Label>Categoría</Label>
               <Select value={macro.categoryId} onValueChange={(v) => setMacro((s) => ({ ...s, categoryId: v }))}>
                 <SelectTrigger><SelectValue placeholder="Categoría" /></SelectTrigger>
@@ -72,8 +72,8 @@ const MacrosSettings = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="col-span-6">
-              <Button onClick={() => macro.groupId && macro.name && addMacroToGroup(macro.groupId, { name: macro.name, emoji: macro.emoji, amount: macro.amount, accountId: macro.accountId, categoryId: macro.categoryId })}>Agregar macro</Button>
+            <div>
+              <Button className="w-full" onClick={() => macro.groupId && macro.name && addMacroToGroup(macro.groupId, { name: macro.name, emoji: macro.emoji, amount: macro.amount, accountId: macro.accountId, categoryId: macro.categoryId })}>Agregar macro</Button>
             </div>
           </div>
 

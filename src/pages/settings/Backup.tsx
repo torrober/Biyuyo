@@ -33,11 +33,20 @@ const BackupSettings = () => {
       <Card>
         <CardHeader><CardTitle>Exportar / Importar</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          <div className="flex gap-3">
-            <Button onClick={download}>Exportar backup.json</Button>
-            <Input type="file" accept="application/json" onChange={(e) => upload(e.target.files?.[0] ?? undefined)} />
+          <div className="space-y-4">
+            <div>
+              <Button className="w-full" onClick={download}>Exportar backup.json</Button>
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">Selecciona un archivo para restaurar tu respaldo</p>
+              <Input type="file" accept="application/json" onChange={(e) => upload(e.target.files?.[0] ?? undefined)} />
+            </div>
+            <div className="border-t pt-4">
+              <p className="text-sm text-muted-foreground">
+                Tu información es local y privada. Exporta tu backup para migrar o resguardar tus datos.
+              </p>
+            </div>
           </div>
-          <p className="text-sm text-muted-foreground">Tu información es local y privada. Exporta tu backup para migrar o resguardar.</p>
         </CardContent>
       </Card>
     </div>

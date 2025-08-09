@@ -21,24 +21,24 @@ const CreditsSettings = () => {
       <Card>
         <CardHeader><CardTitle>Créditos</CardTitle></CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-5 gap-3">
-            <div>
+          <div className="space-y-4">
+            <div className="space-y-2">
               <Label>Nombre</Label>
               <Input value={cre.name} onChange={(e) => setCre((s) => ({ ...s, name: e.target.value }))} />
             </div>
-            <div>
+            <div className="space-y-2">
               <Label>Total</Label>
               <Input type="number" value={cre.total} onChange={(e) => setCre((s) => ({ ...s, total: Number(e.target.value) }))} />
             </div>
-            <div>
+            <div className="space-y-2">
               <Label>Cuota mensual</Label>
               <Input type="number" value={cre.monthlyInstallment} onChange={(e) => setCre((s) => ({ ...s, monthlyInstallment: Number(e.target.value) }))} />
             </div>
-            <div>
+            <div className="space-y-2">
               <Label>Día de pago</Label>
               <Input type="number" value={cre.dueDay} onChange={(e) => setCre((s) => ({ ...s, dueDay: Number(e.target.value) }))} />
             </div>
-            <div>
+            <div className="space-y-2">
               <Label>Cuenta</Label>
               <Select value={cre.accountId} onValueChange={(v) => setCre((s) => ({ ...s, accountId: v }))}>
                 <SelectTrigger><SelectValue placeholder="Cuenta" /></SelectTrigger>
@@ -47,8 +47,20 @@ const CreditsSettings = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="col-span-5">
-              <Button onClick={() => cre.name && cre.accountId && addCredit({ name: cre.name, total: cre.total, monthlyInstallment: cre.monthlyInstallment, dueDay: cre.dueDay, accountId: cre.accountId, paid: 0 })}>Agregar</Button>
+            <div>
+              <Button 
+                className="w-full"
+                onClick={() => cre.name && cre.accountId && addCredit({ 
+                  name: cre.name, 
+                  total: cre.total, 
+                  monthlyInstallment: cre.monthlyInstallment, 
+                  dueDay: cre.dueDay, 
+                  accountId: cre.accountId, 
+                  paid: 0 
+                })}
+              >
+                Agregar
+              </Button>
             </div>
           </div>
           <ul className="space-y-2">

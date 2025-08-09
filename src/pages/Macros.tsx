@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Plus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const currency = (n: number) => n.toLocaleString(undefined, { style: "currency", currency: "USD" });
 
@@ -51,9 +54,26 @@ const Macros = () => {
         <link rel="canonical" href="/macros" />
       </Helmet>
 
-      <p className="text-sm text-muted-foreground">Un toque: registra de inmediato. Mantener presionado: ajustar monto.</p>
+      <Card className="border-dashed">
+        <CardHeader>
+          <CardTitle className="text-lg">Configuración de Macros</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Button asChild className="w-full">
+            <Link to="/ajustes/macros" className="flex items-center justify-center gap-2">
+              <Plus className="h-4 w-4" />
+              Crear nueva macro
+            </Link>
+          </Button>
+        </CardContent>
+      </Card>
 
-      {macroGroups.length === 0 && <p className="text-muted-foreground">Crea grupos y macros desde Ajustes.</p>}
+
+      {macroGroups.length === 0 && (
+        <div className="text-center text-sm text-muted-foreground">
+          No hay macros configuradas
+        </div>
+      )}
 
       <Accordion type="multiple" className="space-y-3">
         {macroGroups.map((g) => (
