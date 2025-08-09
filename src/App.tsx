@@ -83,14 +83,14 @@ const App = () => (
               </Popover>
             </div>
             <footer className="fixed bottom-0 inset-x-0 z-50 bg-background/90 backdrop-blur border-t">
-              <nav className="container relative">
+              <nav className="container relative pt-8 pb-2">
                 {/* Botón de inicio central */}
-                <div className="absolute left-1/2 -translate-x-1/2 -top-6 z-10">
+                <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-7 z-20">
                   <NavLink 
                     to="/" 
                     end 
                     className={({ isActive }) => 
-                      `flex items-center justify-center w-14 h-14
+                      `pointer-events-auto flex items-center justify-center w-14 h-14
                       rounded-full border-4 border-background shadow-sm
                       ${isActive ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`
                     } 
