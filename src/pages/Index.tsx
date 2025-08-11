@@ -23,6 +23,7 @@ const Dashboard = () => {
   const {
     accounts,
     categories,
+    transactions,
     recurrings,
     credits,
     macroGroups,
@@ -41,6 +42,12 @@ const Dashboard = () => {
   const { toast } = useToast();
 
   const month = currentMonthKey();
+
+  const incomeThisMonth = useMemo(() => {
+    const incomes = transactions
+      .filter((t) => t.type === "income" && t.date.startsWith(month) && !t.transferId);
+    return incomes.reduce((sum, t) => sum + t.amount, 0);
+  }, [transactions, month]);
 
   const kpis = useMemo(() => {
     const saldo = totalSpendableBalance();
@@ -200,7 +207,7 @@ const Dashboard = () => {
                   <p className="text-xs font-medium truncate">Ingresos del Mes</p>
                 </div>
                 <p className="text-sm font-medium text-green-600 dark:text-green-400 tabular-nums">
-                  {currency(0.00)}
+                  {currency(incomeThisMonth)}
                 </p>
               </div>
 

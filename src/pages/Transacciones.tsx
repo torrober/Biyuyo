@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useFinance, Transaction, TxType } from "@/store/finance";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,8 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Plus, ChevronRight, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight } from "lucide-react";
 
 const currency = (n: number) => n.toLocaleString("es-CO", { style: "currency", currency: "COP" });
 
@@ -20,13 +20,11 @@ const Transacciones = () => {
     addTransaction,
     editTransaction,
     deleteTransaction,
-    createTransfer,
   } = useFinance();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isAdvanced, setIsAdvanced] = useState(false);
   const [query, setQuery] = useState("");
   const [accountFilter, setAccountFilter] = useState<string | "all">("all");
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase().trim();
@@ -42,23 +40,19 @@ const Transacciones = () => {
   const [editing, setEditing] = useState<Transaction | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Transaction | null>(null);
 
-  // New transaction form (advanced)
+  // Infinite scroll state
+  const [visibleCount, setVisibleCount] = useState(5);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // New transaction modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [newTx, setNewTx] = useState<Omit<Transaction, "id">>({
     type: "expense",
     amount: 0,
-    date: new Date().toISOString().slice(0, 16), // for datetime-local
+    date: new Date().toISOString().slice(0, 16),
     description: "",
     accountId: accounts[0]?.id ?? "",
     categoryId: categories[0]?.id ?? null,
-  });
-
-  // Transfer form
-  const [transfer, setTransfer] = useState({
-    amount: 0,
-    from: accounts[0]?.id ?? "",
-    to: accounts[1]?.id ?? "",
-    date: new Date().toISOString().slice(0, 16),
-    description: "Transferencia",
   });
 
   const onSaveEdit = () => {
@@ -72,10 +66,49 @@ const Transacciones = () => {
     addTransaction({ ...newTx, date: iso });
   };
 
-  const onCreateTransfer = () => {
-    const iso = new Date(transfer.date).toISOString();
-    if (!transfer.from || !transfer.to || transfer.from === transfer.to) return;
-    createTransfer({ fromAccountId: transfer.from, toAccountId: transfer.to, amount: transfer.amount, date: iso, description: transfer.description });
+  // Reset visible count when filter changes
+  useEffect(() => {
+    setVisibleCount(Math.min(5, filtered.length));
+  }, [filtered]);
+
+  // Load more on reaching page bottom
+  useEffect(() => {
+    const onScroll = () => {
+      const threshold = 100;
+      const scrolledToBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - threshold;
+      if (scrolledToBottom) {
+        setIsLoading(true);
+        setVisibleCount((c) => {
+          const next = Math.min(c + 5, filtered.length);
+          if (next === c) {
+            setIsLoading(false);
+          } else {
+            setTimeout(() => setIsLoading(false), 200);
+          }
+          return next;
+        });
+      }
+    };
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [filtered.length]);
+
+  const visibleTransactions = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount]);
+  const hasMore = visibleCount < filtered.length;
+
+  // Open modal from FAB query param (?new=1)
+  useEffect(() => {
+    const shouldOpen = searchParams.get("new") === "1";
+    if (shouldOpen) setIsModalOpen(true);
+  }, [searchParams]);
+
+  // When closing modal, clear ?new param if present
+  const handleModalOpenChange = (open: boolean) => {
+    setIsModalOpen(open);
+    if (!open && searchParams.get("new")) {
+      searchParams.delete("new");
+      setSearchParams(searchParams, { replace: true });
+    }
   };
 
   return (
@@ -86,143 +119,13 @@ const Transacciones = () => {
         <link rel="canonical" href="/transacciones" />
       </Helmet>
 
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Nueva Transacción</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Button 
-              onClick={() => setIsModalOpen(true)}
-              className="w-full h-24 text-lg hover:scale-[0.98] transition-transform"
-            >
-              <Plus className="mr-2 h-5 w-5" />
-              Añadir Transacción
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Nueva Transacción</DialogTitle>
-            </DialogHeader>
-            
-            <div className="flex items-center justify-between py-4">
-              <Label htmlFor="advanced-mode">Modo Avanzado</Label>
-              <Switch
-                id="advanced-mode"
-                checked={isAdvanced}
-                onCheckedChange={setIsAdvanced}
-              />
-            </div>
-
-            <div className="grid gap-4">
-              {isAdvanced ? (
-                <div className="grid grid-cols-1 gap-3">
-                  <div>
-                    <Label>Tipo</Label>
-                    <Select value={newTx.type} onValueChange={(v: TxType) => setNewTx((s) => ({ ...s, type: v }))}>
-                      <SelectTrigger><SelectValue placeholder="Tipo" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="expense">Gasto</SelectItem>
-                        <SelectItem value="income">Ingreso</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label>Monto</Label>
-                    <Input
-                      type="number"
-                      inputMode="decimal"
-                      value={newTx.amount === 0 ? "" : newTx.amount}
-                      onChange={(e) => setNewTx((s) => ({ ...s, amount: Number(e.target.value) || 0 }))}
-                    />
-                  </div>
-
-                  <div>
-                    <Label>Fecha</Label>
-                    <Input type="datetime-local" value={newTx.date as string} onChange={(e) => setNewTx((s) => ({ ...s, date: e.target.value }))} />
-                  </div>
-
-                  <div>
-                    <Label>Cuenta</Label>
-                    <Select value={newTx.accountId} onValueChange={(v) => setNewTx((s) => ({ ...s, accountId: v }))}>
-                      <SelectTrigger><SelectValue placeholder="Cuenta" /></SelectTrigger>
-                      <SelectContent>
-                        {accounts.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label>Categoría</Label>
-                    <Select value={newTx.categoryId ?? "none"} onValueChange={(v) => setNewTx((s) => ({ ...s, categoryId: v === "none" ? null : v }))}>
-                      <SelectTrigger><SelectValue placeholder="Categoría" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">Sin categoría</SelectItem>
-                        {categories.map((c) => <SelectItem key={c.id} value={c.id}>{c.emoji ?? ""} {c.name}</SelectItem>)}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label>Descripción</Label>
-                    <Input value={newTx.description ?? ""} onChange={(e) => setNewTx((s) => ({ ...s, description: e.target.value }))} />
-                  </div>
-                </div>
-              ) : (
-                <div className="grid gap-4">
-                  <div>
-                    <Label>Tipo</Label>
-                    <Select value={newTx.type} onValueChange={(v: TxType) => setNewTx((s) => ({ ...s, type: v }))}>
-                      <SelectTrigger><SelectValue placeholder="Tipo" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="expense">Gasto</SelectItem>
-                        <SelectItem value="income">Ingreso</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label>Monto</Label>
-                    <Input
-                      type="number"
-                      inputMode="decimal"
-                      value={newTx.amount === 0 ? "" : newTx.amount}
-                      onChange={(e) => setNewTx((s) => ({ ...s, amount: Number(e.target.value) || 0 }))}
-                    />
-                  </div>
-
-                  <div>
-                    <Label>Descripción</Label>
-                    <Input value={newTx.description ?? ""} onChange={(e) => setNewTx((s) => ({ ...s, description: e.target.value }))} />
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <DialogFooter>
-              <Button onClick={() => {
-                onCreateNew();
-                setIsModalOpen(false);
-                setIsAdvanced(false);
-              }}>
-                Crear
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </section>
+      {/* Removed the New Transaction card and modal */}
 
       <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Últimas Transacciones</CardTitle>
-          </CardHeader>
-          <CardContent className="grid gap-4">
-            {filtered.slice(0, 4).map((t) => {
+        <div className="space-y-2">
+          <h2 className="text-xl font-semibold">Transacciones</h2>
+          <div className="grid gap-4">
+            {visibleTransactions.map((t) => {
               const date = new Date(t.date);
               const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear().toString().slice(-2)} - ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
               const title = t.description || "Transacción";
@@ -260,14 +163,91 @@ const Transacciones = () => {
                 </Card>
               );
             })}
-          </CardContent>
-        </Card>
-        
-        <Button variant="outline" className="w-full">
-          Ver más transacciones
-          <ChevronRight className="ml-2 h-4 w-4" />
-        </Button>
+          </div>
+          {filtered.length === 0 && (
+            <p className="text-sm text-muted-foreground">No hay transacciones.</p>
+          )}
+          {filtered.length > 0 && !hasMore && (
+            <p className="text-xs text-muted-foreground text-center">No hay más transacciones</p>
+          )}
+          {filtered.length > 0 && hasMore && isLoading && (
+            <p className="text-xs text-muted-foreground text-center">Cargando más...</p>
+          )}
+        </div>
+
+        {/* Infinite scroll loads more automatically when reaching the bottom */}
       </div>
+
+      {/* New Transaction Modal (simple form only, opened from FAB) */}
+      <Dialog open={isModalOpen} onOpenChange={handleModalOpenChange}>
+        <DialogContent className="!fixed !inset-0 !left-0 !top-0 !right-0 !bottom-0 !m-0 !w-screen !h-screen !max-w-none !rounded-none !p-4 sm:!p-6 !translate-x-0 !translate-y-0 overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Nueva Transacción</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4">
+            <div>
+              <Label>Tipo</Label>
+              <Select value={newTx.type} onValueChange={(v: TxType) => setNewTx((s) => ({ ...s, type: v }))}>
+                <SelectTrigger><SelectValue placeholder="Tipo" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="expense">Gasto</SelectItem>
+                  <SelectItem value="income">Ingreso</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>Monto</Label>
+              <Input
+                type="number"
+                inputMode="decimal"
+                value={newTx.amount === 0 ? "" : newTx.amount}
+                onChange={(e) => setNewTx((s) => ({ ...s, amount: Number(e.target.value) || 0 }))}
+              />
+            </div>
+
+            <div>
+              <Label>Fecha</Label>
+              <Input type="datetime-local" value={newTx.date as string} onChange={(e) => setNewTx((s) => ({ ...s, date: e.target.value }))} />
+            </div>
+
+            <div>
+              <Label>Cuenta</Label>
+              <Select value={newTx.accountId} onValueChange={(v) => setNewTx((s) => ({ ...s, accountId: v }))}>
+                <SelectTrigger><SelectValue placeholder="Cuenta" /></SelectTrigger>
+                <SelectContent>
+                  {accounts.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>Categoría</Label>
+              <Select value={newTx.categoryId ?? "none"} onValueChange={(v) => setNewTx((s) => ({ ...s, categoryId: v === "none" ? null : v }))}>
+                <SelectTrigger><SelectValue placeholder="Categoría" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Sin categoría</SelectItem>
+                  {categories.map((c) => <SelectItem key={c.id} value={c.id}>{c.emoji ?? ""} {c.name}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>Descripción</Label>
+              <Input value={newTx.description ?? ""} onChange={(e) => setNewTx((s) => ({ ...s, description: e.target.value }))} />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button onClick={() => {
+              onCreateNew();
+              handleModalOpenChange(false);
+            }}>
+              Crear
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit Dialog */}
       <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>

@@ -15,10 +15,10 @@ import RecurringsSettings from "./pages/settings/Recurrings";
 import CreditsSettings from "./pages/settings/Credits";
 import MacrosSettings from "./pages/settings/Macros";
 import BackupSettings from "./pages/settings/Backup";
-import { Home, Zap, List, Settings, Plus, Tag, CreditCard, Wallet } from "lucide-react";
+import { Home, Zap, List, Settings, Plus, Tag, CreditCard, Wallet, X } from "lucide-react";
 import Header from "./components/Header";
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Sheet, SheetTrigger, SheetContent, SheetClose } from "@/components/ui/sheet";
 
 const queryClient = new QueryClient();
 
@@ -53,39 +53,62 @@ const App = () => (
 
                 {/* Home centrado absolutamente */}
                 <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 z-20">
-                  <Popover>
-                    <PopoverTrigger asChild>
+                  <Sheet>
+                    <SheetTrigger asChild>
                       <Button variant="ghost" size="icon" aria-label="Abrir acciones rápidas" className="fab-btn border-t-2 border-t-[hsl(var(--fab-ring))]">
                         <Plus className="h-12 w-12" />
                       </Button>
-                    </PopoverTrigger>
-                    <PopoverContent align="center" side="top" className="w-64 p-2 space-y-1">
-                      <Button asChild variant="outline" className="w-full justify-between">
-                        <Link to="/transacciones" aria-label="Crear nueva transacción" className="flex w-full items-center justify-between">
-                          <span className="text-sm">Crear nueva Transacción</span>
-                          <Wallet className="h-4 w-4 opacity-70" />
-                        </Link>
-                      </Button>
-                      <Button asChild variant="outline" className="w-full justify-between">
-                        <Link to="/ajustes/categorias" aria-label="Crear nueva categoría" className="flex w-full items-center justify-between">
-                          <span className="text-sm">Crear nueva Categoría</span>
-                          <Tag className="h-4 w-4 opacity-70" />
-                        </Link>
-                      </Button>
-                      <Button asChild variant="outline" className="w-full justify-between">
-                        <Link to="/ajustes/creditos" aria-label="Crear nuevo crédito" className="flex w-full items-center justify-between">
-                          <span className="text-sm">Crear nuevo Crédito</span>
-                          <CreditCard className="h-4 w-4 opacity-70" />
-                        </Link>
-                      </Button>
-                      <Button asChild variant="outline" className="w-full justify-between">
-                        <Link to="/ajustes/macros" aria-label="Crear nueva macro" className="flex w-full items-center justify-between">
-                          <span className="text-sm">Crear nueva Macro</span>
-                          <Zap className="h-4 w-4 opacity-70" />
-                        </Link>
-                      </Button>
-                    </PopoverContent>
-                  </Popover>
+                    </SheetTrigger>
+                    <SheetContent side="bottom" className="rounded-t-2xl p-5 pb-8">
+                      <div className="flex justify-center" aria-hidden>
+                        <div className="h-1.5 w-10 rounded-full bg-muted-foreground/30" />
+                      </div>
+                      <div className="w-full max-w-md mx-auto">
+                        <div className="flex items-center justify-between pb-2">
+                          <span className="text-lg font-bold">Acciones rápidas</span>
+                          <SheetClose asChild>
+                            <Button variant="ghost" size="icon" aria-label="Cerrar acciones rápidas">
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </SheetClose>
+                        </div>
+                      </div>
+                       <div className="w-full max-w-md mx-auto space-y-3">
+                        <SheetClose asChild>
+                          <Button asChild variant="outline" className="w-full justify-between">
+                            <Link to="/transacciones?new=1" aria-label="Crear nueva transacción" className="flex w-full items-center justify-between">
+                              <span className="text-sm">Crear nueva Transacción</span>
+                              <Wallet className="h-4 w-4 opacity-70" />
+                            </Link>
+                          </Button>
+                        </SheetClose>
+                        <SheetClose asChild>
+                          <Button asChild variant="outline" className="w-full justify-between">
+                            <Link to="/ajustes/categorias" aria-label="Crear nueva categoría" className="flex w-full items-center justify-between">
+                              <span className="text-sm">Crear nueva Categoría</span>
+                              <Tag className="h-4 w-4 opacity-70" />
+                            </Link>
+                          </Button>
+                        </SheetClose>
+                        <SheetClose asChild>
+                          <Button asChild variant="outline" className="w-full justify-between">
+                            <Link to="/ajustes/creditos" aria-label="Crear nuevo crédito" className="flex w-full items-center justify-between">
+                              <span className="text-sm">Crear nuevo Crédito</span>
+                              <CreditCard className="h-4 w-4 opacity-70" />
+                            </Link>
+                          </Button>
+                        </SheetClose>
+                        <SheetClose asChild>
+                          <Button asChild variant="outline" className="w-full justify-between">
+                            <Link to="/ajustes/macros" aria-label="Crear nueva macro" className="flex w-full items-center justify-between">
+                              <span className="text-sm">Crear nueva Macro</span>
+                              <Zap className="h-4 w-4 opacity-70" />
+                            </Link>
+                          </Button>
+                        </SheetClose>
+                      </div>
+                    </SheetContent>
+                  </Sheet>
                 </div>
 
                 {/* Barra de navegación */}
