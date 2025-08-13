@@ -291,7 +291,7 @@ const Dashboard = () => {
           <DialogHeader>
             <DialogTitle>Selecciona hasta 4 macros</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-2 max-h-72 overflow-auto pr-1">
+          <div className="grid gap-2 max-h-72 overflow-auto pr-1 overscroll-none">
             {allMacros.map((m) => {
               const selected = quickMacroIds.includes(m.id);
               const disabled = !selected && quickMacroIds.length >= 4;
