@@ -73,6 +73,7 @@
   },
   "devDependencies": {
     "@capacitor/android": "^7.4.2",
+    "@capacitor/status-bar": "^7.0.2",
     "@eslint/js": "^9.32.0",
     "@tailwindcss/typography": "^0.5.16",
     "@types/node": "^22.16.5",

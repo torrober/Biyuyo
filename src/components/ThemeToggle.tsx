@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { StatusBar, Style } from '@capacitor/status-bar'
+import { Capacitor } from '@capacitor/core'
 
 export const ThemeToggle = () => {
   const [theme, setTheme] = useState<string>(() =>
@@ -12,6 +14,10 @@ export const ThemeToggle = () => {
     if (theme === "dark") root.classList.add("dark");
     else root.classList.remove("dark");
     localStorage.setItem("theme", theme);
+    // Update status bar when theme changes (native only)
+    if (Capacitor.isNativePlatform()) {
+      StatusBar.setStyle({ style: theme === 'dark' ? Style.Dark : Style.Light }).catch(() => {})
+    }
   }, [theme]);
 
   return (
