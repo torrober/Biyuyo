@@ -8,7 +8,10 @@ const Header = () => {
   const navigate = useNavigate();
 
   return (
-    <header className="sticky top-0 z-40 glass-bar border-b-[hsl(var(--fab-ring))]">
+    <header
+      className="sticky top-0 z-40 glass-bar border-b-[hsl(var(--fab-ring))]"
+      style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + var(--statusbar-padding, 0px))' }}
+    >
       <div className="container h-12 grid grid-cols-3 items-center">
         <div className="flex items-center">
           {location.pathname.includes('/ajustes/') && (

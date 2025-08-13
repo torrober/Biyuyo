@@ -180,7 +180,7 @@ const Transacciones = () => {
 
       {/* New Transaction Modal (simple form only, opened from FAB) */}
       <Dialog open={isModalOpen} onOpenChange={handleModalOpenChange}>
-        <DialogContent className="!fixed !inset-0 !left-0 !top-0 !right-0 !bottom-0 !m-0 !w-screen !h-screen !max-w-none !rounded-none !p-4 sm:!p-6 !translate-x-0 !translate-y-0 overflow-y-auto">
+        <DialogContent className="!fixed !inset-0 !left-0 !top-0 !right-0 !bottom-0 !m-0 !w-screen !h-screen !max-w-none !rounded-none !p-4 sm:!p-6 !translate-x-0 !translate-y-0 overflow-y-auto overscroll-none">
           <DialogHeader>
             <DialogTitle>Nueva Transacción</DialogTitle>
           </DialogHeader>
