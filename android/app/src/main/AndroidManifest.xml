@@ -16,7 +16,10 @@
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBarLaunch"
             android:launchMode="singleTask"
-            android:exported="true">
+            android:exported="true"
+            android:excludeFromRecents="false"
+            android:showWhenLocked="false"
+            android:turnScreenOn="false">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

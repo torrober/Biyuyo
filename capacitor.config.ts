@@ -11,6 +11,11 @@ const config: CapacitorConfig = {
     StatusBar: {
       overlaysWebView: true,
       style: 'DEFAULT'
+    },
+    PrivacyScreen: {
+      enable: true,
+      imageName: 'splash',
+      imageScale: 'CENTER_CROP'
     }
   }
 }
