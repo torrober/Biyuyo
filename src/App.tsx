@@ -119,7 +119,7 @@ const App = () => (
                   </NavLink>
                   <NavLink to="/transacciones" className={({ isActive }) => `flex flex-col items-center justify-center py-1.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-label="Transacciones" title="Transacciones">
                     <List className="h-5 w-5" />
-                    <span className="text-[11px] leading-none">Movs</span>
+                    <span className="text-[11px] leading-none">Trans</span>
                   </NavLink>
                   {/* Espacio central reservado para el FAB */}
                   <div aria-hidden />

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">safe-spend-planner</string>
-    <string name="title_activity_main">safe-spend-planner</string>
+    <string name="app_name">biyuyo</string>
+    <string name="title_activity_main">biyuyo</string>
     <string name="package_name">com.safespender.planner</string>
     <string name="custom_url_scheme">com.safespender.planner</string>
 </resources>
