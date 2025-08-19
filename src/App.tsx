@@ -122,33 +122,25 @@ const App = () => {
                          <div className="w-full max-w-md mx-auto space-y-3">
                           <SheetClose asChild>
                             <Button asChild variant="outline" className="w-full justify-between">
-                              <Link to="/transacciones?new=1" aria-label="Crear nueva transacción" className="flex w-full items-center justify-between">
-                                <span className="text-sm">Crear nueva Transacción</span>
+                              <Link to="/transacciones?new=1" aria-label="Crear transacción" className="flex w-full items-center justify-between">
+                                <span className="text-sm">Crear Transacción</span>
                                 <Wallet className="h-4 w-4 opacity-70" />
                               </Link>
                             </Button>
                           </SheetClose>
                           <SheetClose asChild>
                             <Button asChild variant="outline" className="w-full justify-between">
-                              <Link to="/ajustes/categorias" aria-label="Crear nueva categoría" className="flex w-full items-center justify-between">
-                                <span className="text-sm">Crear nueva Categoría</span>
-                                <Tag className="h-4 w-4 opacity-70" />
+                              <Link to="/ajustes/cuentas" aria-label="Abonar a un ahorro" className="flex w-full items-center justify-between">
+                                <span className="text-sm">Abonar a un ahorro</span>
+                                <Wallet className="h-4 w-4 opacity-70" />
                               </Link>
                             </Button>
                           </SheetClose>
                           <SheetClose asChild>
                             <Button asChild variant="outline" className="w-full justify-between">
-                              <Link to="/ajustes/creditos" aria-label="Crear nuevo crédito" className="flex w-full items-center justify-between">
-                                <span className="text-sm">Crear nuevo Crédito</span>
+                              <Link to="/ajustes/creditos" aria-label="Abonar a un crédito" className="flex w-full items-center justify-between">
+                                <span className="text-sm">Abonar a un Crédito</span>
                                 <CreditCard className="h-4 w-4 opacity-70" />
-                              </Link>
-                            </Button>
-                          </SheetClose>
-                          <SheetClose asChild>
-                            <Button asChild variant="outline" className="w-full justify-between">
-                              <Link to="/ajustes/macros" aria-label="Crear nueva macro" className="flex w-full items-center justify-between">
-                                <span className="text-sm">Crear nueva Macro</span>
-                                <Zap className="h-4 w-4 opacity-70" />
                               </Link>
                             </Button>
                           </SheetClose>
