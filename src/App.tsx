@@ -20,7 +20,8 @@ import Header from "./components/Header";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger, SheetContent, SheetClose } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { PrivacyScreen } from '@capacitor/privacy-screen';
 
 const queryClient = new QueryClient();
 
@@ -57,6 +58,20 @@ const useSwipeDown = (onSwipeDown: () => void) => {
 
 const App = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  
+  // Initialize privacy screen
+  useEffect(() => {
+    const initializePrivacyScreen = async () => {
+      try {
+        await PrivacyScreen.enable();
+        console.log('Privacy screen enabled');
+      } catch (error) {
+        console.error('Error enabling privacy screen:', error);
+      }
+    };
+    
+    initializePrivacyScreen();
+  }, []);
   
   const handleSwipeDown = () => {
     setIsSheetOpen(false);
