@@ -14,7 +14,7 @@ const Header = () => {
     >
       <div className="container h-12 grid grid-cols-3 items-center">
         <div className="flex items-center">
-          {location.pathname.includes('/ajustes/') && (
+          {(location.pathname.includes('/ajustes/') || location.pathname === '/flujo-de-caja') && (
             <Button
               variant="ghost"
               size="icon"
@@ -36,6 +36,7 @@ const Header = () => {
           {location.pathname === '/ajustes/backup' && 'Respaldo'}
           {location.pathname === '/transacciones' && 'Transacciones'}
           {location.pathname === '/macros' && 'Macros'}
+          {location.pathname === '/flujo-de-caja' && 'Flujo de caja'}
         </div>
         <div className="justify-self-end"><ThemeToggle /></div>
       </div>
