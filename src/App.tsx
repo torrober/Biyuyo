@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Macros from "./pages/Macros";
 import Transacciones from "./pages/Transacciones";
+import FlujoDeCaja from "./pages/FlujoDeCaja";
 import Ajustes from "./pages/Ajustes";
 import AccountsSettings from "./pages/settings/Accounts";
 import CategoriesSettings from "./pages/settings/Categories";
@@ -93,6 +94,7 @@ const App = () => {
                   <Route path="/" element={<Index />} />
                   <Route path="/macros" element={<Macros />} />
                   <Route path="/transacciones" element={<Transacciones />} />
+                  <Route path="/flujo-de-caja" element={<FlujoDeCaja />} />
                   <Route path="/ajustes" element={<Ajustes />} />
                   <Route path="/ajustes/cuentas" element={<AccountsSettings />} />
                   <Route path="/ajustes/categorias" element={<CategoriesSettings />} />
