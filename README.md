@@ -38,7 +38,3 @@ npm run dev
 ```
 npm run android:sync
 ```
-### iOS
-```
-npm run ios:sync
-```
