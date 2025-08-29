@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { ArrowUpRight, ArrowDownRight, Search, Filter } from "lucide-react";
 
 const currency = (n: number) => n.toLocaleString("es-CO", { style: "currency", currency: "COP" });
 
@@ -25,16 +26,50 @@ const Transacciones = () => {
   const [query, setQuery] = useState("");
   const [accountFilter, setAccountFilter] = useState<string | "all">("all");
   const [searchParams, setSearchParams] = useSearchParams();
+  const [startDate, setStartDate] = useState<string>(""); // YYYY-MM-DD
+  const [endDate, setEndDate] = useState<string>(""); // YYYY-MM-DD
+  const [typeFilter, setTypeFilter] = useState<"income" | "expense" | "both">("both");
+
+  const normalizeText = (s: string) =>
+    (s ?? "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+
+  // Reset filters on page load
+  useEffect(() => {
+    setQuery("");
+    setAccountFilter("all");
+    setStartDate("");
+    setEndDate("");
+    setTypeFilter("both");
+  }, []);
+
+  // Validate date range: if start > end, clear and alert
+  useEffect(() => {
+    if (startDate && endDate && startDate > endDate) {
+      alert("Rango de fechas inválido: la fecha de inicio no puede ser mayor que la fecha fin.");
+      setStartDate("");
+      setEndDate("");
+    }
+  }, [startDate, endDate]);
 
   const filtered = useMemo(() => {
-    const q = query.toLowerCase().trim();
+    const q = normalizeText(query).trim();
     return transactions.filter((t) => {
       if (accountFilter !== "all" && t.accountId !== accountFilter) return false;
+      if (typeFilter !== "both" && t.type !== typeFilter) return false;
+
+      // Date range filter using YYYY-MM-DD string comparison to avoid TZ issues
+      const txDay = t.date.slice(0, 10);
+      if (startDate && txDay < startDate) return false;
+      if (endDate && txDay > endDate) return false;
+
       if (!q) return true;
-      const desc = (t.description ?? "").toLowerCase();
+      const desc = normalizeText(t.description ?? "");
       return desc.includes(q);
     });
-  }, [transactions, query, accountFilter]);
+  }, [transactions, query, accountFilter, startDate, endDate, typeFilter]);
 
   // Edit dialog
   const [editing, setEditing] = useState<Transaction | null>(null);
@@ -124,6 +159,60 @@ const Transacciones = () => {
       <div className="space-y-6">
         <div className="space-y-2">
           <h2 className="text-xl font-semibold">Transacciones</h2>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar"
+              className="pl-9"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="advanced-filters">
+              <AccordionTrigger>
+                <span className="flex items-center gap-2">
+                  <Filter className="h-4 w-4" />
+                  Filtros Avanzados
+                </span>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                  <div className="flex flex-col gap-1">
+                    <Label>Fecha inicio</Label>
+                    <Input
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <Label>Fecha fin</Label>
+                    <Input
+                      type="date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 gap-3">
+                  <div className="flex flex-col gap-1">
+                    <Label>Tipo</Label>
+                    <Select value={typeFilter} onValueChange={(v: "income" | "expense" | "both") => setTypeFilter(v)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Tipo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="income">Ingresos</SelectItem>
+                        <SelectItem value="expense">Gastos</SelectItem>
+                        <SelectItem value="both">Ambos</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
           <div className="grid gap-4">
             {visibleTransactions.map((t) => {
               const date = new Date(t.date);
