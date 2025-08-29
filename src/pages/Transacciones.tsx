@@ -41,7 +41,7 @@ const Transacciones = () => {
   const [confirmDelete, setConfirmDelete] = useState<Transaction | null>(null);
 
   // Infinite scroll state
-  const [visibleCount, setVisibleCount] = useState(5);
+  const [visibleCount, setVisibleCount] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
 
   // New transaction modal state
@@ -68,7 +68,7 @@ const Transacciones = () => {
 
   // Reset visible count when filter changes
   useEffect(() => {
-    setVisibleCount(Math.min(5, filtered.length));
+    setVisibleCount(Math.min(10, filtered.length));
   }, [filtered]);
 
   // Load more on reaching page bottom
