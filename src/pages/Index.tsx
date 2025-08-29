@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import { flushSync } from "react-dom";
 import { useMemo, useEffect, useState } from "react";
 import { useFinance, currentMonthKey } from "@/store/finance";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -44,26 +45,18 @@ const Dashboard = () => {
 
   const month = currentMonthKey();
 
-  const incomeThisMonth = useMemo(() => {
-    const incomes = transactions
-      .filter((t) => t.type === "income" && t.date.startsWith(month) && !t.transferId);
-    return incomes.reduce((sum, t) => sum + t.amount, 0);
-  }, [transactions, month]);
+  const incomeThisMonth = transactions
+    .filter((t) => t.type === "income" && t.date.startsWith(month) && !t.transferId)
+    .reduce((sum, t) => sum + t.amount, 0);
 
-  const kpis = useMemo(() => {
-    const saldo = totalSpendableBalance();
-    const obligaciones = monthlyObligationsRemaining();
-    const disponible = safeToSpend();
-    const apartaQuincena = monthlyObligationsTotal() / 2;
-    return { saldo, obligaciones, disponible, apartaQuincena };
-  }, [
-    totalSpendableBalance,
-    monthlyObligationsRemaining,
-    safeToSpend,
-    monthlyObligationsTotal,
-  ]);
+  const kpis = {
+    saldo: totalSpendableBalance(),
+    obligaciones: monthlyObligationsRemaining(),
+    disponible: safeToSpend(),
+    apartaQuincena: monthlyObligationsTotal() / 2,
+  };
 
-  const pieData = useMemo(() => {
+  const pieData = (() => {
     const data = expensesByCategory(month).map((x) => {
       const cat = categories.find((c) => c.id === x.categoryId);
       return {
@@ -72,7 +65,7 @@ const Dashboard = () => {
       };
     });
     return data.length ? data : [{ name: "Sin datos", value: 1 }];
-  }, [categories, expensesByCategory, month]);
+  })();
 
   const COLORS = [
     "#82ca9d",
@@ -84,7 +77,10 @@ const Dashboard = () => {
   ]; // only used by chart SVG
 
   const handlePayRecurring = (id: string) => {
-    const txId = payRecurring(id);
+    let txId: string | null = null;
+    flushSync(() => {
+      txId = payRecurring(id);
+    });
     if (!txId) return;
     toast({
       title: "Pago recurrente registrado",
@@ -104,7 +100,10 @@ const Dashboard = () => {
   };
 
   const handlePayCredit = (creditId: string) => {
-    const txId = payCreditInstallment(creditId);
+    let txId: string | null = null;
+    flushSync(() => {
+      txId = payCreditInstallment(creditId);
+    });
     if (!txId) return;
     toast({
       title: "Pago de crédito registrado",
@@ -165,7 +164,10 @@ const Dashboard = () => {
   };
 
   const runMacro = async (macroId: string, groupId: string) => {
-    const txId = triggerMacro(macroId, groupId);
+    let txId: string | null = null;
+    flushSync(() => {
+      txId = triggerMacro(macroId, groupId);
+    });
     if (txId) {
       toast({ title: "Macro ejecutada", description: "Se creó una transacción." });
     }
