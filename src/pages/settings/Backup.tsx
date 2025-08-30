@@ -86,14 +86,24 @@ const BackupSettings = () => {
     <div className="space-y-6 animate-enter">
       <Helmet>
         <title>Respaldo — Finanzas Local-First</title>
-        <meta name="description" content="Exporta e importa tus datos financieros." />
+        <meta
+          name="description"
+          content="Exporta e importa tus datos financieros."
+        />
       </Helmet>
 
       <Card>
-        <CardHeader><CardTitle>Exportar / Importar</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle>Exportar backup</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Tu información es local y privada. Exporta tu backup para migrar o
+            resguardar tus datos.
+          </p>
+        </CardHeader>
         <CardContent className="space-y-3">
           <div className="space-y-4">
             <div>
+<<<<<<< Updated upstream
               <Button className="w-full" onClick={download}>Exportar copia de seguridad</Button>
             </div>
             <div className="space-y-2">
@@ -104,7 +114,29 @@ const BackupSettings = () => {
               <p className="text-sm text-muted-foreground">
                 Tu información es local y privada. Exporta tu backup para migrar o resguardar tus datos.
               </p>
+=======
+              <Button className="w-full" onClick={download}>
+                Exportar copia de seguridad.
+              </Button>
+>>>>>>> Stashed changes
             </div>
+          </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Importar backup</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Selecciona un archivo para restaurar tu respaldo
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            <Input
+              type="file"
+              accept="application/json"
+              onChange={(e) => upload(e.target.files?.[0] ?? undefined)}
+            />
           </div>
         </CardContent>
       </Card>
