@@ -103,7 +103,6 @@ const BackupSettings = () => {
         <CardContent className="space-y-3">
           <div className="space-y-4">
             <div>
-<<<<<<< Updated upstream
               <Button className="w-full" onClick={download}>Exportar copia de seguridad</Button>
             </div>
             <div className="space-y-2">
@@ -118,7 +117,6 @@ const BackupSettings = () => {
               <Button className="w-full" onClick={download}>
                 Exportar copia de seguridad.
               </Button>
->>>>>>> Stashed changes
             </div>
           </div>
         </CardContent>
