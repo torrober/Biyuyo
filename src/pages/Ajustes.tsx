@@ -9,7 +9,7 @@ const settingsLinks = [
   { name: "Pagos Recurrentes", path: "/ajustes/recurrentes" },
   { name: "Créditos", path: "/ajustes/creditos" },
   { name: "Macros", path: "/ajustes/macros" },
-  { name: "Respaldo", path: "/ajustes/backup" },
+  { name: "Datos", path: "/ajustes/backup" },
 ];
 
 const Ajustes = () => {

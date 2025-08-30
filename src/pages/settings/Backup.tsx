@@ -143,10 +143,15 @@ const BackupSettings = () => {
         <title>Respaldo — Finanzas Local-First</title>
         <meta
           name="description"
-          content="Exporta e importa tus datos financieros."
+          content="Exporta, importa y maneja tus datos financieros."
         />
       </Helmet>
-
+      <div>
+          <h1 className="text-2xl font-bold">Datos</h1>
+          <p className="text-sm text-muted-foreground">
+            Exporta, importa y maneja tus datos financieros.
+          </p>
+        </div>
       <Card>
         <CardHeader>
           <CardTitle>Exportar backup</CardTitle>

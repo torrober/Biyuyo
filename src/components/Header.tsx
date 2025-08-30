@@ -33,7 +33,7 @@ const Header = () => {
           {location.pathname === '/ajustes/recurrentes' && 'Pagos Recurrentes'}
           {location.pathname === '/ajustes/creditos' && 'Créditos'}
           {location.pathname === '/ajustes/macros' && 'Macros'}
-          {location.pathname === '/ajustes/backup' && 'Respaldo'}
+          {location.pathname === '/ajustes/backup' && 'Datos'}
           {location.pathname === '/transacciones' && 'Transacciones'}
           {location.pathname === '/macros' && 'Macros'}
           {location.pathname === '/flujo-de-caja' && 'Flujo de caja'}
