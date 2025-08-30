@@ -7,6 +7,7 @@ import { Filesystem, Directory, Encoding } from "@capacitor/filesystem";
 import { Capacitor } from "@capacitor/core";
 import { Toast } from "@capacitor/toast";
 import { Share } from "@capacitor/share";
+import { FilePicker } from "@capawesome/capacitor-file-picker";
 
 const BackupSettings = () => {
   const { exportData, importData } = useFinance();
@@ -82,6 +83,57 @@ const BackupSettings = () => {
     importData(text);
   };
 
+  const pickAndUploadNative = async () => {
+    try {
+      if (!Capacitor.isNativePlatform()) return;
+
+      // Ensure directory exists (no-op if already there)
+      try {
+        await Filesystem.mkdir({
+          path: "biyuyo",
+          directory: Directory.Documents,
+          recursive: true,
+        });
+      } catch (_) {
+        // ignore if already exists
+      }
+
+      // On Android request permissions proactively
+      if (Capacitor.getPlatform() === "android") {
+        try {
+          await Filesystem.requestPermissions();
+        } catch (_) {
+          // ignore
+        }
+      }
+
+      const result = await FilePicker.pickFiles({
+        types: ["application/json"],
+        limit: 1,
+        readData: true,
+      });
+
+      const file = result.files?.[0];
+      if (!file) return;
+
+      // Prefer base64 data provided by the plugin (safe for small JSON backups)
+      if (file.data) {
+        // Decode Base64 to string (backups are UTF-8/ASCII JSON)
+        const text = atob(file.data);
+        importData(text);
+        await Toast.show({ text: "Backup importado" });
+        return;
+      } else {
+        await Toast.show({ text: "No se pudo leer el archivo seleccionado" });
+      }
+    } catch (err) {
+      console.error("Error picking file:", err);
+      try {
+        await Toast.show({ text: "Error al abrir el selector" });
+      } catch (_) {}
+    }
+  };
+
   return (
     <div className="space-y-6 animate-enter">
       <Helmet>
@@ -117,11 +169,17 @@ const BackupSettings = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            <Input
-              type="file"
-              accept="application/json"
-              onChange={(e) => upload(e.target.files?.[0] ?? undefined)}
-            />
+            {Capacitor.isNativePlatform() ? (
+              <Button className="w-full" onClick={pickAndUploadNative}>
+                Seleccionar backup
+              </Button>
+            ) : (
+              <Input
+                type="file"
+                accept="application/json"
+                onChange={(e) => upload(e.target.files?.[0] ?? undefined)}
+              />
+            )}
           </div>
         </CardContent>
       </Card>
