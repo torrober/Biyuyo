@@ -105,18 +105,6 @@ const BackupSettings = () => {
             <div>
               <Button className="w-full" onClick={download}>Exportar copia de seguridad</Button>
             </div>
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">Selecciona un archivo para restaurar tu respaldo</p>
-              <Input type="file" accept="application/json" onChange={(e) => upload(e.target.files?.[0] ?? undefined)} />
-            </div>
-            <div className="border-t pt-4">
-              <p className="text-sm text-muted-foreground">
-                Tu información es local y privada. Exporta tu backup para migrar o resguardar tus datos.
-              </p>
-              <Button className="w-full" onClick={download}>
-                Exportar copia de seguridad.
-              </Button>
-            </div>
           </div>
         </CardContent>
       </Card>
