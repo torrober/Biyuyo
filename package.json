@@ -20,6 +20,7 @@
     "@capacitor/app": "^7.0.2",
     "@capacitor/cli": "^7.4.2",
     "@capacitor/core": "^7.4.2",
+    "@capacitor/dialog": "^7.0.2",
     "@capacitor/filesystem": "^7.1.4",
     "@capacitor/privacy-screen": "^1.1.0",
     "@capacitor/share": "^7.0.2",

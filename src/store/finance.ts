@@ -140,6 +140,7 @@ interface FinanceState {
   // Import / Export
   exportData: () => string;
   importData: (json: string) => void;
+  resetAllData: () => void;
 }
 
 const defaultAccounts: Account[] = [
@@ -455,6 +456,16 @@ export const useFinance = create<FinanceState>()(
         } catch (e) {
           console.error("Import error", e);
         }
+      },
+      resetAllData: () => {
+        set(() => ({
+          accounts: defaultAccounts,
+          categories: defaultCategories,
+          transactions: [],
+          macroGroups: [],
+          recurrings: [],
+          credits: [],
+        }));
       },
     }),
     { name: "finance-store" }

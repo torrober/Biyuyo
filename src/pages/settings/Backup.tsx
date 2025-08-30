@@ -7,10 +7,11 @@ import { Filesystem, Directory, Encoding } from "@capacitor/filesystem";
 import { Capacitor } from "@capacitor/core";
 import { Toast } from "@capacitor/toast";
 import { Share } from "@capacitor/share";
+import { Dialog } from "@capacitor/dialog";
 import { FilePicker } from "@capawesome/capacitor-file-picker";
 
 const BackupSettings = () => {
-  const { exportData, importData } = useFinance();
+  const { exportData, importData, resetAllData } = useFinance();
 
   const download = async () => {
     const data = exportData();
@@ -189,6 +190,36 @@ const BackupSettings = () => {
               />
             )}
           </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Eliminar datos</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Borra permanentemente tus cuentas, categorías, transacciones, recurrentes y créditos. Esta acción no se puede deshacer.
+          </p>
+        </CardHeader>
+        <CardContent>
+          <Button
+            variant="destructive"
+            className="w-full"
+            onClick={async () => {
+              const { value } = await Dialog.confirm({
+                title: "Confirmar eliminación",
+                message: "¿Seguro que deseas eliminar todos tus datos financieros? Esta acción no se puede deshacer.",
+                okButtonTitle: "OK",
+                cancelButtonTitle: "Cancelar",
+              });
+              if (value) {
+                resetAllData();
+                try {
+                  await Toast.show({ text: "Datos eliminados" });
+                } catch (_) {}
+              }
+            }}
+          >
+            Eliminar datos
+          </Button>
         </CardContent>
       </Card>
     </div>
