@@ -118,8 +118,11 @@ const BackupSettings = () => {
 
       // Prefer base64 data provided by the plugin (safe for small JSON backups)
       if (file.data) {
-        // Decode Base64 to string (backups are UTF-8/ASCII JSON)
-        const text = atob(file.data);
+        // Decode Base64 to UTF-8 string to preserve emojis and non-ASCII
+        const binary = atob(file.data);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        const text = new TextDecoder("utf-8").decode(bytes);
         importData(text);
         await Toast.show({ text: "Backup importado" });
         return;
