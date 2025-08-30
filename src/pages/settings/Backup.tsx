@@ -113,7 +113,6 @@ const BackupSettings = () => {
               <p className="text-sm text-muted-foreground">
                 Tu información es local y privada. Exporta tu backup para migrar o resguardar tus datos.
               </p>
-=======
               <Button className="w-full" onClick={download}>
                 Exportar copia de seguridad.
               </Button>
