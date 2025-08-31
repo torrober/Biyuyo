@@ -208,7 +208,7 @@ const Dashboard = () => {
             </div>
 
             <div className="grid gap-2">
-              <div className="grid grid-cols-[1fr,auto] items-center gap-3 p-2 rounded-lg border bg-green-100 dark:bg-green-900">
+              <div className="grid grid-cols-[1fr,auto] items-center gap-3 p-2 rounded-lg border">
                 <div className="flex items-center gap-2">
                   <div className="h-2 w-2 rounded-full bg-green-500 shrink-0" />
                   <p className="text-xs font-medium truncate">Ingresos del Mes</p>
@@ -218,7 +218,7 @@ const Dashboard = () => {
                 </p>
               </div>
 
-              <div className="grid grid-cols-[1fr,auto] items-center gap-3 p-2 rounded-lg border bg-red-100 dark:bg-red-900">
+              <div className="grid grid-cols-[1fr,auto] items-center gap-3 p-2 rounded-lg border">
                 <div className="flex items-center gap-2">
                   <div className="h-2 w-2 rounded-full bg-red-500 shrink-0" />
                   <p className="text-xs font-medium truncate">Gastos Realizados</p>
@@ -228,7 +228,7 @@ const Dashboard = () => {
                 </p>
               </div>
 
-              <div className="grid grid-cols-[1fr,auto] items-center gap-3 p-2 rounded-lg border bg-yellow-100 dark:bg-yellow-900">
+              <div className="grid grid-cols-[1fr,auto] items-center gap-3 p-2 rounded-lg border">
                 <div className="flex items-center gap-2">
                   <div className="h-2 w-2 rounded-full bg-yellow-500 shrink-0">
                   </div>

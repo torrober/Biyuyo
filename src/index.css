@@ -383,3 +383,13 @@ input, textarea, [contenteditable="true"] {
     -ms-user-select: text;
     user-select: text;
 }
+
+/* Remove default focus outlines globally (including charts) */
+*:focus, *:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+/* Recharts containers sometimes get focus; ensure no outline */
+.recharts-wrapper:focus, .recharts-surface:focus {
+  outline: none !important;
+}
