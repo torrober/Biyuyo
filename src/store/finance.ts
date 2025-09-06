@@ -47,6 +47,7 @@ export interface Macro {
   amount: number;
   categoryId?: string | null;
   accountId: string;
+  deleted?: boolean;
 }
 
 export interface MacroGroup {
@@ -120,7 +121,9 @@ interface FinanceState {
 
   addMacroGroup: (g: Omit<MacroGroup, "id"> & { id?: string }) => string;
   addMacroToGroup: (groupId: string, m: Omit<Macro, "id"> & { id?: string }) => string;
+  updateMacroInGroup: (groupId: string, macroId: string, patch: Partial<Macro>) => void;
   deleteMacroFromGroup: (groupId: string, macroId: string) => void;
+  restoreMacroInGroup: (groupId: string, macroId: string) => void;
   deleteMacroGroup: (groupId: string) => void;
   triggerMacro: (macroId: string, groupId: string, overrideAmount?: number) => string | null;
 
@@ -312,10 +315,22 @@ export const useFinance = create<FinanceState>()(
         }));
         return id;
       },
+      updateMacroInGroup: (groupId, macroId, patch) => {
+        set((s) => ({
+          macroGroups: s.macroGroups.map((g) =>
+            g.id === groupId
+              ? {
+                  ...g,
+                  macros: g.macros.map((m) => (m.id === macroId ? { ...m, ...patch } : m)),
+                }
+              : g
+          ),
+        }));
+      },
       triggerMacro: (macroId, groupId, overrideAmount) => {
         const s = get();
         const group = s.macroGroups.find((g) => g.id === groupId);
-        const macro = group?.macros.find((m) => m.id === macroId);
+        const macro = group?.macros.find((m) => m.id === macroId && !m.deleted);
         if (!macro) return null;
         const amount = overrideAmount ?? macro.amount;
         return get().addTransaction({
@@ -329,9 +344,28 @@ export const useFinance = create<FinanceState>()(
       },
 
       deleteMacroFromGroup: (groupId, macroId) => {
+        // Soft delete: mark as deleted instead of removing
         set((s) => ({
           macroGroups: s.macroGroups.map((g) =>
-            g.id === groupId ? { ...g, macros: g.macros.filter((m) => m.id !== macroId) } : g
+            g.id === groupId
+              ? {
+                  ...g,
+                  macros: g.macros.map((m) => (m.id === macroId ? { ...m, deleted: true } : m)),
+                }
+              : g
+          ),
+        }));
+      },
+      restoreMacroInGroup: (groupId, macroId) => {
+        // Reverse soft delete: set deleted to false
+        set((s) => ({
+          macroGroups: s.macroGroups.map((g) =>
+            g.id === groupId
+              ? {
+                  ...g,
+                  macros: g.macros.map((m) => (m.id === macroId ? { ...m, deleted: false } : m)),
+                }
+              : g
           ),
         }));
       },
