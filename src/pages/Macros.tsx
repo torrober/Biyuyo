@@ -10,16 +10,15 @@ import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import { Pencil, Plus, Trash } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Pencil, Trash, Plus } from "lucide-react";
 
 const currency = (n: number) => n.toLocaleString("es-CO", { style: "currency", currency: "COP" });
 
 const Macros = () => {
-  const { macroGroups, categories, accounts, triggerMacro, deleteTransaction, deleteMacroFromGroup, restoreMacroInGroup, updateMacroInGroup } = useFinance();
+  const { macroGroups, categories, accounts, triggerMacro, deleteTransaction, deleteMacroFromGroup, restoreMacroInGroup, updateMacroInGroup, addMacroGroup, addMacroToGroup } = useFinance();
   const { toast } = useToast();
-  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
   const [pending, setPending] = useState<{ groupId: string; macroId: string; amount: number } | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ groupId: string; macroId: string; name: string } | null>(null);
   const [restoreTarget, setRestoreTarget] = useState<{ groupId: string; macroId: string; name: string } | null>(null);
@@ -32,6 +31,7 @@ const Macros = () => {
     accountId: string;
     categoryId: string | null;
   } | null>(null);
+  const [macro, setMacro] = useState({ name: "", emoji: "", amount: 0, accountId: "", categoryId: "" });
 
   const onQuick = (groupId: string, macroId: string, amount: number) => {
     const id = triggerMacro(macroId, groupId);
@@ -94,14 +94,12 @@ const Macros = () => {
 
       <Card className="border-dashed">
         <CardHeader>
-          <CardTitle className="text-lg">Configuración de Macros</CardTitle>
+          <CardTitle className="text-lg">Macros</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button asChild className="w-full">
-            <Link to="/ajustes/macros" className="flex items-center justify-center gap-2">
-              <Plus className="h-4 w-4" />
-              Crear nueva macro
-            </Link>
+          <Button className="w-full flex items-center justify-center gap-2" onClick={() => setCreateOpen(true)}>
+            <Plus className="h-4 w-4" />
+            Crear nueva macro
           </Button>
         </CardContent>
       </Card>
@@ -286,6 +284,91 @@ const Macros = () => {
               }}
             >
               Registrar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Crear macro */}
+      <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Crear macro</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="space-y-2">
+              <Label>Emoji</Label>
+              <Input
+                value={macro.emoji}
+                onChange={(e) => setMacro((s) => ({ ...s, emoji: e.target.value }))}
+                placeholder="☕"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Nombre</Label>
+              <Input
+                value={macro.name}
+                onChange={(e) => setMacro((s) => ({ ...s, name: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Monto</Label>
+              <Input
+                type="number"
+                inputMode="decimal"
+                value={macro.amount === 0 ? "" : macro.amount}
+                onChange={(e) => setMacro((s) => ({ ...s, amount: Number(e.target.value) || 0 }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Cuenta</Label>
+              <Select
+                value={macro.accountId}
+                onValueChange={(v) => setMacro((s) => ({ ...s, accountId: v }))}
+              >
+                <SelectTrigger><SelectValue placeholder="Cuenta" /></SelectTrigger>
+                <SelectContent>
+                  {accounts.map((a) => (
+                    <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Categoría</Label>
+              <Select
+                value={macro.categoryId}
+                onValueChange={(v) => setMacro((s) => ({ ...s, categoryId: v }))}
+              >
+                <SelectTrigger><SelectValue placeholder="Categoría" /></SelectTrigger>
+                <SelectContent>
+                  {categories.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="secondary" onClick={() => setCreateOpen(false)}>Cancelar</Button>
+            <Button
+              onClick={() => {
+                if (!macro.name) return;
+                const existing = macroGroups[0]?.id;
+                const gid = existing ?? addMacroGroup({ name: "Predeterminado", macros: [] });
+                addMacroToGroup(gid, {
+                  name: macro.name,
+                  emoji: macro.emoji,
+                  amount: macro.amount,
+                  accountId: macro.accountId,
+                  categoryId: macro.categoryId,
+                });
+                toast({ title: "Macro creada" });
+                setMacro({ name: "", emoji: "", amount: 0, accountId: "", categoryId: "" });
+                setCreateOpen(false);
+              }}
+            >
+              Crear
             </Button>
           </DialogFooter>
         </DialogContent>
