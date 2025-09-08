@@ -100,7 +100,6 @@ const App = () => {
                   <Route path="/ajustes/categorias" element={<CategoriesSettings />} />
                   <Route path="/ajustes/recurrentes" element={<RecurringsSettings />} />
                   <Route path="/ajustes/creditos" element={<CreditsSettings />} />
-                  <Route path="/ajustes/macros" element={<MacrosSettings />} />
                   <Route path="/ajustes/backup" element={<BackupSettings />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
