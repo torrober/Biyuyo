@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { indexedDBStorage, migrateFromLocalStorage } from "@/lib/indexeddb-storage";
 
 // UUID generator
 const generateId = () => {
@@ -157,6 +158,9 @@ const defaultCategories: Category[] = [
   { id: generateId(), name: "Comida", emoji: "🍔" },
   { id: generateId(), name: "Suscripciones", emoji: "🧾" },
 ];
+
+// Migrar datos existentes de localStorage a IndexedDB
+migrateFromLocalStorage("finance-store");
 
 export const useFinance = create<FinanceState>()(
   persist(
@@ -502,7 +506,10 @@ export const useFinance = create<FinanceState>()(
         }));
       },
     }),
-    { name: "finance-store" }
+    { 
+      name: "finance-store",
+      storage: createJSONStorage(() => indexedDBStorage),
+    }
   )
 );
 

@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { flushSync } from "react-dom";
 import { useMemo, useEffect, useState } from "react";
 import { useFinance, currentMonthKey } from "@/store/finance";
+import { get, set } from 'idb-keyval';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -15,9 +16,10 @@ import {
   Pie,
   Cell,
   ResponsiveContainer,
-  Tooltip as ReTooltip,
+  Tooltip,
 } from "recharts";
 import { Hourglass } from "lucide-react";
+import { subMonths } from "date-fns";
 
 const currency = (n: number) => n.toLocaleString("es-CO", { style: "currency", currency: "COP" });
 
@@ -43,10 +45,23 @@ const Dashboard = () => {
   } = useFinance();
   const { toast } = useToast();
 
-  const month = currentMonthKey();
+  // Mes actual (para KPIs, recurrentes, créditos)
+  const currentMonth = currentMonthKey();
+
+  // Usar el último mes (previo al actual) para el gráfico de torta
+  const lastMonth = (() => {
+    const d = subMonths(new Date(), 1);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    return `${y}-${m}`; // YYYY-MM
+  })();
 
   const incomeThisMonth = transactions
-    .filter((t) => t.type === "income" && t.date.startsWith(month) && !t.transferId)
+    .filter((t) => t.type === "income" && t.date.startsWith(currentMonth) && !t.transferId)
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const expensesThisMonth = transactions
+    .filter((t) => t.type === "expense" && t.date.startsWith(currentMonth) && !t.transferId)
     .reduce((sum, t) => sum + t.amount, 0);
 
   const kpis = {
@@ -56,25 +71,53 @@ const Dashboard = () => {
     apartaQuincena: monthlyObligationsTotal() / 2,
   };
 
-  const pieData = (() => {
-    const data = expensesByCategory(month).map((x) => {
-      const cat = categories.find((c) => c.id === x.categoryId);
-      return {
-        name: cat ? `${cat.emoji ?? ""} ${cat.name}` : "Sin categoría",
-        value: x.total,
-      };
-    });
-    return data.length ? data : [{ name: "Sin datos", value: 1 }];
-  })();
+  // Datos para el gráfico de torta (gastos por categoría del último mes)
+  const pieData = useMemo(() => {
+    const expensesByCategory = new Map<string, number>();
+    
+    transactions
+      .filter(tx => tx.type === "expense" && !tx.transferId && tx.date.startsWith(lastMonth))
+      .forEach(tx => {
+        const categoryId = tx.categoryId || "sin-categoria";
+        const categoryName = categories.find(c => c.id === categoryId)?.name || "Sin categoría";
+        const emoji = categories.find(c => c.id === categoryId)?.emoji || "";
+        const key = `${emoji} ${categoryName}`;
+        expensesByCategory.set(key, (expensesByCategory.get(key) || 0) + tx.amount);
+      });
+    
+    return Array.from(expensesByCategory.entries()).map(([name, value]) => ({
+      name,
+      value
+    }));
+  }, [transactions, categories, lastMonth]);
 
   const COLORS = [
     "#82ca9d",
-    "#8884d8",
+    "#8884d8", 
     "#ffc658",
     "#ff7f7f",
     "#8dd1e1",
     "#a4de6c",
-  ]; // only used by chart SVG
+    "#d084d0",
+    "#ffa726"
+  ];
+
+  const PieTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      const data = payload[0];
+      const totalLastMonth = transactions
+        .filter((t) => t.type === "expense" && t.date.startsWith(lastMonth) && !t.transferId)
+        .reduce((sum, t) => sum + t.amount, 0);
+      const percentage = totalLastMonth > 0 ? ((data.value / totalLastMonth) * 100).toFixed(1) : '0';
+      return (
+        <div className="bg-background border rounded-lg p-3 shadow-lg">
+          <p className="font-medium">{data.name}</p>
+          <p>{currency(data.value)} ({percentage}%)</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   const handlePayRecurring = (id: string) => {
     let txId: string | null = null;
@@ -128,19 +171,49 @@ const Dashboard = () => {
     });
   };
 
-  // Quick Macros state (persisted locally)
-  const [quickMacroIds, setQuickMacroIds] = useState<string[]>(() => {
-    try {
-      const raw = localStorage.getItem("quickMacroIds");
-      const parsed = raw ? (JSON.parse(raw) as string[]) : [];
-      return Array.isArray(parsed) ? parsed.slice(0, 4) : [];
-    } catch {
-      return [];
-    }
-  });
+  // Quick Macros state (persisted in IndexedDB)
+  const [quickMacroIds, setQuickMacroIds] = useState<string[]>([]);
 
+  // Cargar quickMacroIds desde IndexedDB al inicializar
   useEffect(() => {
-    localStorage.setItem("quickMacroIds", JSON.stringify(quickMacroIds.slice(0, 4)));
+    const loadQuickMacros = async () => {
+      try {
+        // Migrar desde localStorage si existe
+        const oldData = localStorage.getItem("quickMacroIds");
+        if (oldData) {
+          const parsed = JSON.parse(oldData) as string[];
+          if (Array.isArray(parsed)) {
+            await set("quickMacroIds", parsed.slice(0, 4));
+            localStorage.removeItem("quickMacroIds");
+            setQuickMacroIds(parsed.slice(0, 4));
+            return;
+          }
+        }
+
+        // Cargar desde IndexedDB
+        const stored = await get("quickMacroIds");
+        if (stored && Array.isArray(stored)) {
+          setQuickMacroIds(stored.slice(0, 4));
+        }
+      } catch (error) {
+        console.error("Error loading quick macros:", error);
+      }
+    };
+    loadQuickMacros();
+  }, []);
+
+  // Guardar quickMacroIds en IndexedDB cuando cambie
+  useEffect(() => {
+    const saveQuickMacros = async () => {
+      try {
+        await set("quickMacroIds", quickMacroIds.slice(0, 4));
+      } catch (error) {
+        console.error("Error saving quick macros:", error);
+      }
+    };
+    if (quickMacroIds.length >= 0) { // Permitir arrays vacíos
+      saveQuickMacros();
+    }
   }, [quickMacroIds]);
 
   const allMacros = useMemo(() => {
@@ -224,7 +297,7 @@ const Dashboard = () => {
                   <p className="text-xs font-medium truncate">Gastos Realizados</p>
                 </div>
                 <p className="text-sm font-medium text-red-600 dark:text-red-400 tabular-nums">
-                  {currency(expensesByCategory(month).reduce((a, b) => a + b.total, 0))}
+                  {currency(expensesByCategory(currentMonth).reduce((a, b) => a + b.total, 0))}
                 </p>
               </div>
 
@@ -334,7 +407,7 @@ const Dashboard = () => {
               </p>
             )}
             {recurrings.map((r) => {
-              const isPaid = r.paidMonths.includes(month);
+              const isPaid = r.paidMonths.includes(currentMonth);
               return (
                 <div
                   key={r.id}
@@ -361,29 +434,52 @@ const Dashboard = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Gastos por categoría (mes)</CardTitle>
+            <CardTitle>Gastos por categoría (último mes)</CardTitle>
           </CardHeader>
-          <CardContent style={{ height: 260 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  dataKey="value"
-                  nameKey="name"
-                  outerRadius={90}
-                  fill="#8884d8"
-                  label
-                >
-                  {pieData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
+          <CardContent>
+            {pieData.length > 0 ? (
+              <>
+                <div style={{ height: 300 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={pieData}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={70}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {pieData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip content={<PieTooltip />} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                {/* Indicadores del gráfico (leyenda) */}
+                <div className="mt-3 grid gap-2">
+                  {pieData.map((item, index) => (
+                    <div key={index} className="flex items-center gap-2 text-sm">
+                      <span
+                        className="h-2.5 w-2.5 rounded-full"
+                        style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                        aria-hidden
+                      />
+                      <span className="truncate">{item.name}</span>
+                    </div>
                   ))}
-                </Pie>
-                <ReTooltip />
-              </PieChart>
-            </ResponsiveContainer>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center justify-center h-[300px] text-muted-foreground">
+                <div className="text-center">
+                  <Hourglass className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <p>No hay gastos en el último mes</p>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -401,7 +497,7 @@ const Dashboard = () => {
             )}
             {credits.map((c) => {
               const progress = Math.min(100, (c.paid / c.total) * 100);
-              const isPaidThisMonth = c.lastPaidMonth === month;
+              const isPaidThisMonth = c.lastPaidMonth === currentMonth;
               return (
                 <div key={c.id} className="rounded-md border p-3 space-y-2">
                   <div className="flex items-center justify-between">
