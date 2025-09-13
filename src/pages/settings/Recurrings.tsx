@@ -16,13 +16,19 @@ const RecurringsSettings = () => {
   return (
     <div className="space-y-6 animate-enter">
       <Helmet>
-        <title>Pagos Recurrentes — Finanzas Local-First</title>
+        <title>Pagos Recurrentes — Biyuyo</title>
         <meta name="description" content="Configura tus pagos mensuales recurrentes." />
       </Helmet>
 
-      <Card>
-        <CardHeader><CardTitle>Pagos recurrentes</CardTitle></CardHeader>
-        <CardContent className="space-y-4">
+      <div>
+        <h1 className="text-2xl font-bold">Pagos recurrentes</h1>
+        <p className="text-sm text-muted-foreground">
+          Configura tus pagos mensuales recurrentes.
+        </p>
+      </div>
+
+      <div>
+        <div className="space-y-4 p-0">
           <div className="space-y-4">
             <div className="space-y-2">
               <Label>Nombre</Label>
@@ -83,8 +89,8 @@ const RecurringsSettings = () => {
               </li>
             ))}
           </ul>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

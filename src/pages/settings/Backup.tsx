@@ -141,7 +141,7 @@ const BackupSettings = () => {
   return (
     <div className="space-y-6 animate-enter">
       <Helmet>
-        <title>Respaldo — Finanzas Local-First</title>
+        <title>Respaldo — Biyuyo</title>
         <meta
           name="description"
           content="Exporta, importa y maneja tus datos financieros."

@@ -23,13 +23,19 @@ const AccountsSettings = () => {
   return (
     <div className="space-y-6 animate-enter">
       <Helmet>
-        <title>Cuentas — Finanzas Local-First</title>
+        <title>Cuentas — Biyuyo</title>
         <meta name="description" content="Gestiona tus cuentas bancarias, efectivo y ahorros." />
       </Helmet>
 
-      <Card>
-        <CardHeader><CardTitle>Gestión de cuentas</CardTitle></CardHeader>
-        <CardContent className="space-y-4">
+      <div>
+        <h1 className="text-2xl font-bold">Cuentas</h1>
+        <p className="text-sm text-muted-foreground">
+          Administra tus cuentas bancarias, efectivo y ahorros.
+        </p>
+      </div>
+
+      <div>
+        <div className="space-y-4 p-0">
           <div className="space-y-4">
             <div className="space-y-2">
               <Label>Nombre</Label>
@@ -110,8 +116,8 @@ const AccountsSettings = () => {
               </li>
             ))}
           </ul>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

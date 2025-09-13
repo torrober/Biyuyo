@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Pencil, Trash, Plus } from "lucide-react";
+import { limitToSingleGrapheme, isSingleEmoji } from "@/lib/utils";
 
 const currency = (n: number) => n.toLocaleString("es-CO", { style: "currency", currency: "COP" });
 
@@ -87,7 +88,7 @@ const Macros = () => {
   return (
     <div className="space-y-6 animate-enter">
       <Helmet>
-        <title>Macros de gasto — Finanzas Local-First</title>
+        <title>Macros de gasto — Biyuyo</title>
         <meta name="description" content="Registra gastos comunes al instante con macros personalizadas." />
         <link rel="canonical" href="/macros" />
       </Helmet>
@@ -300,8 +301,15 @@ const Macros = () => {
               <Label>Emoji</Label>
               <Input
                 value={macro.emoji}
-                onChange={(e) => setMacro((s) => ({ ...s, emoji: e.target.value }))}
+                onChange={(e) => {
+                  const v = limitToSingleGrapheme(e.target.value);
+                  const onlyEmoji = isSingleEmoji(v) ? v : "";
+                  setMacro((s) => ({ ...s, emoji: onlyEmoji }));
+                }}
                 placeholder="☕"
+                required
+                maxLength={4}
+                aria-label="Emoji de macro"
               />
             </div>
             <div className="space-y-2">
@@ -352,8 +360,9 @@ const Macros = () => {
           <DialogFooter>
             <Button variant="secondary" onClick={() => setCreateOpen(false)}>Cancelar</Button>
             <Button
+              disabled={!macro.name || !macro.emoji || !isSingleEmoji(macro.emoji)}
               onClick={() => {
-                if (!macro.name) return;
+                if (!macro.name || !isSingleEmoji(macro.emoji)) return;
                 const existing = macroGroups[0]?.id;
                 const gid = existing ?? addMacroGroup({ name: "Predeterminado", macros: [] });
                 addMacroToGroup(gid, {
@@ -385,8 +394,15 @@ const Macros = () => {
               <Label>Emoji</Label>
               <Input
                 value={editTarget?.emoji ?? ""}
-                onChange={(e) => setEditTarget((s) => (s ? { ...s, emoji: e.target.value } : s))}
+                onChange={(e) => {
+                  const v = limitToSingleGrapheme(e.target.value);
+                  const onlyEmoji = isSingleEmoji(v) ? v : "";
+                  setEditTarget((s) => (s ? { ...s, emoji: onlyEmoji } : s));
+                }}
                 placeholder="☕"
+                required
+                maxLength={4}
+                aria-label="Emoji de macro"
               />
             </div>
             <div className="space-y-2">
@@ -437,8 +453,9 @@ const Macros = () => {
           <DialogFooter>
             <Button variant="secondary" onClick={() => setEditTarget(null)}>Cancelar</Button>
             <Button
+              disabled={!editTarget || !editTarget.name || !editTarget.emoji || !isSingleEmoji(editTarget.emoji)}
               onClick={() => {
-                if (!editTarget) return;
+                if (!editTarget || !isSingleEmoji(editTarget.emoji)) return;
                 updateMacroInGroup(editTarget.groupId, editTarget.macroId, {
                   name: editTarget.name,
                   emoji: editTarget.emoji,

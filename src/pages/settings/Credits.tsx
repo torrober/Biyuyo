@@ -16,13 +16,19 @@ const CreditsSettings = () => {
   return (
     <div className="space-y-6 animate-enter">
       <Helmet>
-        <title>Créditos — Finanzas Local-First</title>
+        <title>Créditos — Biyuyo</title>
         <meta name="description" content="Gestiona tus créditos y préstamos." />
       </Helmet>
 
-      <Card>
-        <CardHeader><CardTitle>Créditos</CardTitle></CardHeader>
-        <CardContent className="space-y-4">
+      <div>
+        <h1 className="text-2xl font-bold">Créditos</h1>
+        <p className="text-sm text-muted-foreground">
+          Gestiona tus créditos y préstamos.
+        </p>
+      </div>
+
+      <div>
+        <div className="space-y-4 p-0">
           <div className="space-y-4">
             <div className="space-y-2">
               <Label>Nombre</Label>
@@ -83,8 +89,8 @@ const CreditsSettings = () => {
               </li>
             ))}
           </ul>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

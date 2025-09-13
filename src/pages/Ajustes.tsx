@@ -16,7 +16,7 @@ const Ajustes = () => {
   return (
     <div className="space-y-6 animate-enter">
       <Helmet>
-        <title>Ajustes — Finanzas Local-First</title>
+        <title>Ajustes — Biyuyo</title>
         <meta name="description" content="Gestiona cuentas, categorías, recurrentes, créditos, macros y respaldo de datos." />
         <link rel="canonical" href="/ajustes" />
       </Helmet>

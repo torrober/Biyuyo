@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { toLocalDatetimeInputValue, fromLocalDatetimeInputValue } from "@/lib/utils";
 import { ArrowUpRight, ArrowDownRight, Search, Filter } from "lucide-react";
 
 const currency = (n: number) => n.toLocaleString("es-CO", { style: "currency", currency: "COP" });
@@ -149,7 +150,7 @@ const Transacciones = () => {
   return (
     <div className="space-y-6 animate-enter">
       <Helmet>
-        <title>Transacciones — Finanzas Local-First</title>
+        <title>Transacciones — Biyuyo</title>
         <meta name="description" content="Historial completo con búsqueda, filtros y edición/eliminación." />
         <link rel="canonical" href="/transacciones" />
       </Helmet>
@@ -367,7 +368,11 @@ const Transacciones = () => {
               </div>
               <div>
                 <Label>Fecha</Label>
-                <Input type="datetime-local" value={editing.date.slice(0,16)} onChange={(e) => setEditing({ ...editing, date: new Date(e.target.value).toISOString() })} />
+                <Input
+                  type="datetime-local"
+                  value={toLocalDatetimeInputValue(editing.date)}
+                  onChange={(e) => setEditing({ ...editing, date: fromLocalDatetimeInputValue(e.target.value) })}
+                />
               </div>
               <div>
                 <Label>Cuenta</Label>
