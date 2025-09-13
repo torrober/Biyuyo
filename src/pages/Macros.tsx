@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import NativeSelect from "@/components/ui/native-select";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -330,31 +330,19 @@ const Macros = () => {
             </div>
             <div className="space-y-2">
               <Label>Cuenta</Label>
-              <Select
-                value={macro.accountId}
-                onValueChange={(v) => setMacro((s) => ({ ...s, accountId: v }))}
-              >
-                <SelectTrigger><SelectValue placeholder="Cuenta" /></SelectTrigger>
-                <SelectContent>
-                  {accounts.map((a) => (
-                    <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <NativeSelect value={macro.accountId} onChange={(e) => setMacro((s) => ({ ...s, accountId: e.target.value }))} placeholderOption="Cuenta">
+                {accounts.map((a) => (
+                  <option key={a.id} value={a.id}>{a.name}</option>
+                ))}
+              </NativeSelect>
             </div>
             <div className="space-y-2">
               <Label>Categoría</Label>
-              <Select
-                value={macro.categoryId}
-                onValueChange={(v) => setMacro((s) => ({ ...s, categoryId: v }))}
-              >
-                <SelectTrigger><SelectValue placeholder="Categoría" /></SelectTrigger>
-                <SelectContent>
-                  {categories.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <NativeSelect value={macro.categoryId} onChange={(e) => setMacro((s) => ({ ...s, categoryId: e.target.value }))} placeholderOption="Categoría">
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </NativeSelect>
             </div>
           </div>
           <DialogFooter>
@@ -423,31 +411,19 @@ const Macros = () => {
             </div>
             <div className="space-y-2">
               <Label>Cuenta</Label>
-              <Select
-                value={editTarget?.accountId ?? ""}
-                onValueChange={(v) => setEditTarget((s) => (s ? { ...s, accountId: v } : s))}
-              >
-                <SelectTrigger><SelectValue placeholder="Cuenta" /></SelectTrigger>
-                <SelectContent>
-                  {accounts.map((a) => (
-                    <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <NativeSelect value={editTarget?.accountId ?? ""} onChange={(e) => setEditTarget((s) => (s ? { ...s, accountId: e.target.value } : s))} placeholderOption="Cuenta">
+                {accounts.map((a) => (
+                  <option key={a.id} value={a.id}>{a.name}</option>
+                ))}
+              </NativeSelect>
             </div>
             <div className="space-y-2">
               <Label>Categoría</Label>
-              <Select
-                value={editTarget?.categoryId ?? ""}
-                onValueChange={(v) => setEditTarget((s) => (s ? { ...s, categoryId: v } : s))}
-              >
-                <SelectTrigger><SelectValue placeholder="Categoría" /></SelectTrigger>
-                <SelectContent>
-                  {categories.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <NativeSelect value={editTarget?.categoryId ?? ""} onChange={(e) => setEditTarget((s) => (s ? { ...s, categoryId: e.target.value } : s))} placeholderOption="Categoría">
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </NativeSelect>
             </div>
           </div>
           <DialogFooter>

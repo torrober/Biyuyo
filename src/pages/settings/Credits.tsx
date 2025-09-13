@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import NativeSelect from "@/components/ui/native-select";
 import { Helmet } from "react-helmet-async";
 
 const currency = (n: number) => n.toLocaleString("es-CO", { style: "currency", currency: "COP" });
@@ -58,12 +58,11 @@ const CreditsSettings = () => {
             </div>
             <div className="space-y-2">
               <Label>Cuenta</Label>
-              <Select value={cre.accountId} onValueChange={(v) => setCre((s) => ({ ...s, accountId: v }))}>
-                <SelectTrigger><SelectValue placeholder="Cuenta" /></SelectTrigger>
-                <SelectContent>
-                  {accounts.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <NativeSelect value={cre.accountId} onChange={(e) => setCre((s) => ({ ...s, accountId: e.target.value }))} placeholderOption="Cuenta">
+                {accounts.map((a) => (
+                  <option key={a.id} value={a.id}>{a.name}</option>
+                ))}
+              </NativeSelect>
             </div>
             <div>
               <Button 

@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import NativeSelect from "@/components/ui/native-select";
 import { Helmet } from "react-helmet-async";
 import { Plus, Pencil } from "lucide-react";
 import {
@@ -43,14 +43,11 @@ const AccountsSettings = () => {
             </div>
             <div className="space-y-2">
               <Label>Tipo</Label>
-              <Select value={acc.type} onValueChange={(v: AccountType) => setAcc((s) => ({ ...s, type: v }))}>
-                <SelectTrigger><SelectValue placeholder="Tipo" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="cash">Efectivo</SelectItem>
-                  <SelectItem value="bank">Banco</SelectItem>
-                  <SelectItem value="savings">Ahorro</SelectItem>
-                </SelectContent>
-              </Select>
+              <NativeSelect value={acc.type} onChange={(e) => setAcc((s) => ({ ...s, type: e.target.value as AccountType }))} placeholderOption="Tipo">
+                <option value="cash">Efectivo</option>
+                <option value="bank">Banco</option>
+                <option value="savings">Ahorro</option>
+              </NativeSelect>
             </div>
             <div>
               <Button className="w-full" onClick={() => acc.name && addAccount(acc)}>
@@ -89,17 +86,11 @@ const AccountsSettings = () => {
                         </div>
                         <div className="space-y-2">
                           <Label>Tipo</Label>
-                          <Select
-                            value={a.type}
-                            onValueChange={(v: AccountType) => updateAccount(a.id, { type: v })}
-                          >
-                            <SelectTrigger><SelectValue placeholder="Tipo" /></SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="cash">Efectivo</SelectItem>
-                              <SelectItem value="bank">Banco</SelectItem>
-                              <SelectItem value="savings">Ahorro</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <NativeSelect value={a.type} onChange={(e) => updateAccount(a.id, { type: e.target.value as AccountType })} placeholderOption="Tipo">
+                            <option value="cash">Efectivo</option>
+                            <option value="bank">Banco</option>
+                            <option value="savings">Ahorro</option>
+                          </NativeSelect>
                         </div>
                       </div>
                       <div className="space-y-2">

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import NativeSelect from "@/components/ui/native-select";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { toLocalDatetimeInputValue, fromLocalDatetimeInputValue } from "@/lib/utils";
 import { ArrowUpRight, ArrowDownRight, Search, Filter } from "lucide-react";
@@ -199,16 +199,11 @@ const Transacciones = () => {
                 <div className="grid grid-cols-1 gap-3">
                   <div className="flex flex-col gap-1">
                     <Label>Tipo</Label>
-                    <Select value={typeFilter} onValueChange={(v: "income" | "expense" | "both") => setTypeFilter(v)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Tipo" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="income">Ingresos</SelectItem>
-                        <SelectItem value="expense">Gastos</SelectItem>
-                        <SelectItem value="both">Ambos</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <NativeSelect value={typeFilter} onChange={(e) => setTypeFilter(e.target.value as any)} placeholderOption="Tipo">
+                      <option value="income">Ingresos</option>
+                      <option value="expense">Gastos</option>
+                      <option value="both">Ambos</option>
+                    </NativeSelect>
                   </div>
                 </div>
               </AccordionContent>
@@ -277,13 +272,10 @@ const Transacciones = () => {
           <div className="grid gap-4">
             <div>
               <Label>Tipo</Label>
-              <Select value={newTx.type} onValueChange={(v: TxType) => setNewTx((s) => ({ ...s, type: v }))}>
-                <SelectTrigger><SelectValue placeholder="Tipo" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="expense">Gasto</SelectItem>
-                  <SelectItem value="income">Ingreso</SelectItem>
-                </SelectContent>
-              </Select>
+              <NativeSelect value={newTx.type} onChange={(e) => setNewTx((s) => ({ ...s, type: e.target.value as TxType }))} placeholderOption="Tipo">
+                <option value="expense">Gasto</option>
+                <option value="income">Ingreso</option>
+              </NativeSelect>
             </div>
 
             <div>
@@ -303,23 +295,17 @@ const Transacciones = () => {
 
             <div>
               <Label>Cuenta</Label>
-              <Select value={newTx.accountId} onValueChange={(v) => setNewTx((s) => ({ ...s, accountId: v }))}>
-                <SelectTrigger><SelectValue placeholder="Cuenta" /></SelectTrigger>
-                <SelectContent>
-                  {accounts.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <NativeSelect value={newTx.accountId} onChange={(e) => setNewTx((s) => ({ ...s, accountId: e.target.value }))} placeholderOption="Cuenta">
+                {accounts.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+              </NativeSelect>
             </div>
 
             <div>
               <Label>Categoría</Label>
-              <Select value={newTx.categoryId ?? "none"} onValueChange={(v) => setNewTx((s) => ({ ...s, categoryId: v === "none" ? null : v }))}>
-                <SelectTrigger><SelectValue placeholder="Categoría" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">Sin categoría</SelectItem>
-                  {categories.map((c) => <SelectItem key={c.id} value={c.id}>{c.emoji ?? ""} {c.name}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <NativeSelect value={newTx.categoryId ?? "none"} onChange={(e) => setNewTx((s) => ({ ...s, categoryId: e.target.value === "none" ? null : e.target.value }))} placeholderOption="Categoría">
+                <option value="none">Sin categoría</option>
+                {categories.map((c) => <option key={c.id} value={c.id}>{c.emoji ?? ""} {c.name}</option>)}
+              </NativeSelect>
             </div>
 
             <div>
@@ -349,13 +335,10 @@ const Transacciones = () => {
             <div className="grid grid-cols-2 gap-3">
               <div className="col-span-2">
                 <Label>Tipo</Label>
-                <Select value={editing.type} onValueChange={(v: TxType) => setEditing({ ...editing, type: v })}>
-                  <SelectTrigger><SelectValue placeholder="Tipo" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="expense">Gasto</SelectItem>
-                    <SelectItem value="income">Ingreso</SelectItem>
-                  </SelectContent>
-                </Select>
+                <NativeSelect value={editing.type} onChange={(e) => setEditing({ ...editing!, type: e.target.value as TxType })} placeholderOption="Tipo">
+                  <option value="expense">Gasto</option>
+                  <option value="income">Ingreso</option>
+                </NativeSelect>
               </div>
               <div>
                 <Label>Monto</Label>
@@ -376,22 +359,16 @@ const Transacciones = () => {
               </div>
               <div>
                 <Label>Cuenta</Label>
-                <Select value={editing.accountId} onValueChange={(v) => setEditing({ ...editing, accountId: v })}>
-                  <SelectTrigger><SelectValue placeholder="Cuenta" /></SelectTrigger>
-                  <SelectContent>
-                    {accounts.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                <NativeSelect value={editing.accountId} onChange={(e) => setEditing({ ...editing!, accountId: e.target.value })} placeholderOption="Cuenta">
+                  {accounts.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                </NativeSelect>
               </div>
               <div>
                 <Label>Categoría</Label>
-                <Select value={editing.categoryId ?? "none"} onValueChange={(v) => setEditing({ ...editing, categoryId: v === "none" ? null : v })}>
-                  <SelectTrigger><SelectValue placeholder="Categoría" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">Sin categoría</SelectItem>
-                    {categories.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                <NativeSelect value={editing.categoryId ?? "none"} onChange={(e) => setEditing({ ...editing!, categoryId: e.target.value === "none" ? null : e.target.value })} placeholderOption="Categoría">
+                  <option value="none">Sin categoría</option>
+                  {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                </NativeSelect>
               </div>
               <div className="col-span-2">
                 <Label>Descripción</Label>

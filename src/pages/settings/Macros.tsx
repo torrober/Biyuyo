@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import NativeSelect from "@/components/ui/native-select";
 import { Helmet } from "react-helmet-async";
 import { limitToSingleGrapheme, isSingleEmoji } from "@/lib/utils";
 
@@ -42,12 +42,11 @@ const MacrosSettings = () => {
 
             <div className="space-y-2">
               <Label>Grupo</Label>
-              <Select value={macro.groupId} onValueChange={(v) => setMacro((s) => ({ ...s, groupId: v }))}>
-                <SelectTrigger><SelectValue placeholder="Grupo" /></SelectTrigger>
-                <SelectContent>
-                  {macroGroups.map((g) => <SelectItem key={g.id} value={g.id}>{g.name}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <NativeSelect value={macro.groupId} onChange={(e) => setMacro((s) => ({ ...s, groupId: e.target.value }))} placeholderOption="Grupo">
+                {macroGroups.map((g) => (
+                  <option key={g.id} value={g.id}>{g.name}</option>
+                ))}
+              </NativeSelect>
             </div>
             <div className="space-y-2">
               <Label>Emoji</Label>
@@ -79,21 +78,19 @@ const MacrosSettings = () => {
             </div>
             <div className="space-y-2">
               <Label>Cuenta</Label>
-              <Select value={macro.accountId} onValueChange={(v) => setMacro((s) => ({ ...s, accountId: v }))}>
-                <SelectTrigger><SelectValue placeholder="Cuenta" /></SelectTrigger>
-                <SelectContent>
-                  {accounts.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <NativeSelect value={macro.accountId} onChange={(e) => setMacro((s) => ({ ...s, accountId: e.target.value }))} placeholderOption="Cuenta">
+                {accounts.map((a) => (
+                  <option key={a.id} value={a.id}>{a.name}</option>
+                ))}
+              </NativeSelect>
             </div>
             <div className="space-y-2">
               <Label>Categoría</Label>
-              <Select value={macro.categoryId} onValueChange={(v) => setMacro((s) => ({ ...s, categoryId: v }))}>
-                <SelectTrigger><SelectValue placeholder="Categoría" /></SelectTrigger>
-                <SelectContent>
-                  {categories.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <NativeSelect value={macro.categoryId} onChange={(e) => setMacro((s) => ({ ...s, categoryId: e.target.value }))} placeholderOption="Categoría">
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </NativeSelect>
             </div>
             <div>
               <Button
