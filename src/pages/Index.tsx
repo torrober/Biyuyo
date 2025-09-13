@@ -249,7 +249,7 @@ const Dashboard = () => {
   return (
     <div className="space-y-6 animate-enter">
       <Helmet>
-        <title>Finanzas Local-First — Dashboard</title>
+        <title>Biyuyo — Dashboard</title>
         <meta
           name="description"
           content="Panel financiero con Disponible Real y planificación quincenal."

@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+// usando select nativo directo
 import { Helmet } from "react-helmet-async";
 
 const currency = (n: number) => n.toLocaleString("es-CO", { style: "currency", currency: "COP" });
@@ -16,13 +16,19 @@ const RecurringsSettings = () => {
   return (
     <div className="space-y-6 animate-enter">
       <Helmet>
-        <title>Pagos Recurrentes — Finanzas Local-First</title>
+        <title>Pagos Recurrentes — Biyuyo</title>
         <meta name="description" content="Configura tus pagos mensuales recurrentes." />
       </Helmet>
 
-      <Card>
-        <CardHeader><CardTitle>Pagos recurrentes</CardTitle></CardHeader>
-        <CardContent className="space-y-4">
+      <div>
+        <h1 className="text-2xl font-bold">Pagos recurrentes</h1>
+        <p className="text-sm text-muted-foreground">
+          Configura tus pagos mensuales recurrentes.
+        </p>
+      </div>
+
+      <div>
+        <div className="space-y-4 p-0">
           <div className="space-y-4">
             <div className="space-y-2">
               <Label>Nombre</Label>
@@ -43,22 +49,29 @@ const RecurringsSettings = () => {
             </div>
             <div className="space-y-2">
               <Label>Cuenta</Label>
-              <Select value={rec.accountId} onValueChange={(v) => setRec((s) => ({ ...s, accountId: v }))}>
-                <SelectTrigger><SelectValue placeholder="Cuenta" /></SelectTrigger>
-                <SelectContent>
-                  {accounts.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <select
+                className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                value={rec.accountId}
+                onChange={(e) => setRec((s) => ({ ...s, accountId: e.target.value }))}
+              >
+                <option value="" disabled>Cuenta</option>
+                {accounts.map((a) => (
+                  <option key={a.id} value={a.id}>{a.name}</option>
+                ))}
+              </select>
             </div>
             <div className="space-y-2">
               <Label>Categoría</Label>
-              <Select value={(rec.categoryId || "none")} onValueChange={(v) => setRec((s) => ({ ...s, categoryId: v === "none" ? "" : v }))}>
-                <SelectTrigger><SelectValue placeholder="Categoría" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">Sin categoría</SelectItem>
-                  {categories.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <select
+                className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                value={(rec.categoryId || "none")}
+                onChange={(e) => setRec((s) => ({ ...s, categoryId: e.target.value === "none" ? "" : e.target.value }))}
+              >
+                <option value="none">Sin categoría</option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
             </div>
             <div>
               <Button 
@@ -83,8 +96,8 @@ const RecurringsSettings = () => {
               </li>
             ))}
           </ul>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

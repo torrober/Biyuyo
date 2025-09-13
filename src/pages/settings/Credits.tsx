@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import NativeSelect from "@/components/ui/native-select";
 import { Helmet } from "react-helmet-async";
 
 const currency = (n: number) => n.toLocaleString("es-CO", { style: "currency", currency: "COP" });
@@ -16,13 +16,19 @@ const CreditsSettings = () => {
   return (
     <div className="space-y-6 animate-enter">
       <Helmet>
-        <title>Créditos — Finanzas Local-First</title>
+        <title>Créditos — Biyuyo</title>
         <meta name="description" content="Gestiona tus créditos y préstamos." />
       </Helmet>
 
-      <Card>
-        <CardHeader><CardTitle>Créditos</CardTitle></CardHeader>
-        <CardContent className="space-y-4">
+      <div>
+        <h1 className="text-2xl font-bold">Créditos</h1>
+        <p className="text-sm text-muted-foreground">
+          Gestiona tus créditos y préstamos.
+        </p>
+      </div>
+
+      <div>
+        <div className="space-y-4 p-0">
           <div className="space-y-4">
             <div className="space-y-2">
               <Label>Nombre</Label>
@@ -52,12 +58,11 @@ const CreditsSettings = () => {
             </div>
             <div className="space-y-2">
               <Label>Cuenta</Label>
-              <Select value={cre.accountId} onValueChange={(v) => setCre((s) => ({ ...s, accountId: v }))}>
-                <SelectTrigger><SelectValue placeholder="Cuenta" /></SelectTrigger>
-                <SelectContent>
-                  {accounts.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <NativeSelect value={cre.accountId} onChange={(e) => setCre((s) => ({ ...s, accountId: e.target.value }))} placeholderOption="Cuenta">
+                {accounts.map((a) => (
+                  <option key={a.id} value={a.id}>{a.name}</option>
+                ))}
+              </NativeSelect>
             </div>
             <div>
               <Button 
@@ -83,8 +88,8 @@ const CreditsSettings = () => {
               </li>
             ))}
           </ul>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

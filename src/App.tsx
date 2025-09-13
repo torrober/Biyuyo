@@ -146,8 +146,8 @@ const App = () => {
                           </SheetClose>
                           <SheetClose asChild>
                             <Button asChild variant="outline" className="w-full justify-between">
-                              <Link to="/ajustes/cuentas" aria-label="Abonar a un ahorro" className="flex w-full items-center justify-between">
-                                <span className="text-sm">Abonar a un ahorro</span>
+                              <Link to="/ajustes/cuentas" aria-label="Abonar a una meta" className="flex w-full items-center justify-between">
+                                <span className="text-sm">Abonar a una meta</span>
                                 <Wallet className="h-4 w-4 opacity-70" />
                               </Link>
                             </Button>

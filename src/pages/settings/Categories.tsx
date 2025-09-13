@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { limitToSingleGrapheme, isSingleEmoji } from "@/lib/utils";
 import { useFinance } from "@/store/finance";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,24 +26,44 @@ const CategoriesSettings = () => {
   return (
     <div className="space-y-6 animate-enter">
       <Helmet>
-        <title>Categorías — Finanzas Local-First</title>
+        <title>Categorías — Biyuyo</title>
         <meta name="description" content="Gestiona las categorías para tus gastos e ingresos." />
       </Helmet>
 
-      <Card>
-        <CardHeader><CardTitle>Gestión de categorías</CardTitle></CardHeader>
-        <CardContent className="space-y-4">
+      <div>
+        <h1 className="text-2xl font-bold">Categorías</h1>
+        <p className="text-sm text-muted-foreground">
+          Gestiona las categorías para tus gastos e ingresos.
+        </p>
+      </div>
+
+      <div>
+        <div className="space-y-4 p-0">
           <div className="space-y-4">
             <div className="space-y-2">
               <Label>Emoji</Label>
-              <Input value={cat.emoji} onChange={(e) => setCat((s) => ({ ...s, emoji: e.target.value }))} placeholder="🍔" />
+              <Input
+                value={cat.emoji}
+                onChange={(e) => {
+                  const v = limitToSingleGrapheme(e.target.value);
+                  const onlyEmoji = isSingleEmoji(v) ? v : "";
+                  setCat((s) => ({ ...s, emoji: onlyEmoji }));
+                }}
+                placeholder="🍔"
+                inputMode="text"
+                required
+                maxLength={4}
+                aria-label="Emoji de categoría"
+              />
             </div>
             <div className="space-y-2">
               <Label>Nombre</Label>
               <Input value={cat.name} onChange={(e) => setCat((s) => ({ ...s, name: e.target.value }))} />
             </div>
             <div>
-              <Button className="w-full" onClick={() => cat.name && addCategory({ name: cat.name, emoji: cat.emoji })}>
+              <Button className="w-full" disabled={!cat.name || !cat.emoji}
+                onClick={() => cat.name && cat.emoji && addCategory({ name: cat.name, emoji: cat.emoji })}
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Agregar
               </Button>
@@ -79,8 +100,8 @@ const CategoriesSettings = () => {
               </li>
             ))}
           </ul>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import NativeSelect from "@/components/ui/native-select";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Pencil, Trash, Plus } from "lucide-react";
+import { limitToSingleGrapheme, isSingleEmoji } from "@/lib/utils";
 
 const currency = (n: number) => n.toLocaleString("es-CO", { style: "currency", currency: "COP" });
 
@@ -87,7 +88,7 @@ const Macros = () => {
   return (
     <div className="space-y-6 animate-enter">
       <Helmet>
-        <title>Macros de gasto — Finanzas Local-First</title>
+        <title>Macros de gasto — Biyuyo</title>
         <meta name="description" content="Registra gastos comunes al instante con macros personalizadas." />
         <link rel="canonical" href="/macros" />
       </Helmet>
@@ -300,8 +301,15 @@ const Macros = () => {
               <Label>Emoji</Label>
               <Input
                 value={macro.emoji}
-                onChange={(e) => setMacro((s) => ({ ...s, emoji: e.target.value }))}
+                onChange={(e) => {
+                  const v = limitToSingleGrapheme(e.target.value);
+                  const onlyEmoji = isSingleEmoji(v) ? v : "";
+                  setMacro((s) => ({ ...s, emoji: onlyEmoji }));
+                }}
                 placeholder="☕"
+                required
+                maxLength={4}
+                aria-label="Emoji de macro"
               />
             </div>
             <div className="space-y-2">
@@ -322,38 +330,27 @@ const Macros = () => {
             </div>
             <div className="space-y-2">
               <Label>Cuenta</Label>
-              <Select
-                value={macro.accountId}
-                onValueChange={(v) => setMacro((s) => ({ ...s, accountId: v }))}
-              >
-                <SelectTrigger><SelectValue placeholder="Cuenta" /></SelectTrigger>
-                <SelectContent>
-                  {accounts.map((a) => (
-                    <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <NativeSelect value={macro.accountId} onChange={(e) => setMacro((s) => ({ ...s, accountId: e.target.value }))} placeholderOption="Cuenta">
+                {accounts.map((a) => (
+                  <option key={a.id} value={a.id}>{a.name}</option>
+                ))}
+              </NativeSelect>
             </div>
             <div className="space-y-2">
               <Label>Categoría</Label>
-              <Select
-                value={macro.categoryId}
-                onValueChange={(v) => setMacro((s) => ({ ...s, categoryId: v }))}
-              >
-                <SelectTrigger><SelectValue placeholder="Categoría" /></SelectTrigger>
-                <SelectContent>
-                  {categories.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <NativeSelect value={macro.categoryId} onChange={(e) => setMacro((s) => ({ ...s, categoryId: e.target.value }))} placeholderOption="Categoría">
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </NativeSelect>
             </div>
           </div>
           <DialogFooter>
             <Button variant="secondary" onClick={() => setCreateOpen(false)}>Cancelar</Button>
             <Button
+              disabled={!macro.name || !macro.emoji || !isSingleEmoji(macro.emoji)}
               onClick={() => {
-                if (!macro.name) return;
+                if (!macro.name || !isSingleEmoji(macro.emoji)) return;
                 const existing = macroGroups[0]?.id;
                 const gid = existing ?? addMacroGroup({ name: "Predeterminado", macros: [] });
                 addMacroToGroup(gid, {
@@ -385,8 +382,15 @@ const Macros = () => {
               <Label>Emoji</Label>
               <Input
                 value={editTarget?.emoji ?? ""}
-                onChange={(e) => setEditTarget((s) => (s ? { ...s, emoji: e.target.value } : s))}
+                onChange={(e) => {
+                  const v = limitToSingleGrapheme(e.target.value);
+                  const onlyEmoji = isSingleEmoji(v) ? v : "";
+                  setEditTarget((s) => (s ? { ...s, emoji: onlyEmoji } : s));
+                }}
                 placeholder="☕"
+                required
+                maxLength={4}
+                aria-label="Emoji de macro"
               />
             </div>
             <div className="space-y-2">
@@ -407,38 +411,27 @@ const Macros = () => {
             </div>
             <div className="space-y-2">
               <Label>Cuenta</Label>
-              <Select
-                value={editTarget?.accountId ?? ""}
-                onValueChange={(v) => setEditTarget((s) => (s ? { ...s, accountId: v } : s))}
-              >
-                <SelectTrigger><SelectValue placeholder="Cuenta" /></SelectTrigger>
-                <SelectContent>
-                  {accounts.map((a) => (
-                    <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <NativeSelect value={editTarget?.accountId ?? ""} onChange={(e) => setEditTarget((s) => (s ? { ...s, accountId: e.target.value } : s))} placeholderOption="Cuenta">
+                {accounts.map((a) => (
+                  <option key={a.id} value={a.id}>{a.name}</option>
+                ))}
+              </NativeSelect>
             </div>
             <div className="space-y-2">
               <Label>Categoría</Label>
-              <Select
-                value={editTarget?.categoryId ?? ""}
-                onValueChange={(v) => setEditTarget((s) => (s ? { ...s, categoryId: v } : s))}
-              >
-                <SelectTrigger><SelectValue placeholder="Categoría" /></SelectTrigger>
-                <SelectContent>
-                  {categories.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <NativeSelect value={editTarget?.categoryId ?? ""} onChange={(e) => setEditTarget((s) => (s ? { ...s, categoryId: e.target.value } : s))} placeholderOption="Categoría">
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </NativeSelect>
             </div>
           </div>
           <DialogFooter>
             <Button variant="secondary" onClick={() => setEditTarget(null)}>Cancelar</Button>
             <Button
+              disabled={!editTarget || !editTarget.name || !editTarget.emoji || !isSingleEmoji(editTarget.emoji)}
               onClick={() => {
-                if (!editTarget) return;
+                if (!editTarget || !isSingleEmoji(editTarget.emoji)) return;
                 updateMacroInGroup(editTarget.groupId, editTarget.macroId, {
                   name: editTarget.name,
                   emoji: editTarget.emoji,
