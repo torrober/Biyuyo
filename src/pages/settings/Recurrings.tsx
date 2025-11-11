@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-// usando select nativo directo
+import NativeSelect from "@/components/ui/native-select";
 import { Helmet } from "react-helmet-async";
 
 const currency = (n: number) => n.toLocaleString("es-CO", { style: "currency", currency: "COP" });
@@ -49,29 +49,20 @@ const RecurringsSettings = () => {
             </div>
             <div className="space-y-2">
               <Label>Cuenta</Label>
-              <select
-                className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                value={rec.accountId}
-                onChange={(e) => setRec((s) => ({ ...s, accountId: e.target.value }))}
-              >
-                <option value="" disabled>Cuenta</option>
+              <NativeSelect value={rec.accountId} onChange={(e) => setRec((s) => ({ ...s, accountId: e.target.value }))} placeholderOption="Cuenta">
                 {accounts.map((a) => (
                   <option key={a.id} value={a.id}>{a.name}</option>
                 ))}
-              </select>
+              </NativeSelect>
             </div>
             <div className="space-y-2">
               <Label>Categoría</Label>
-              <select
-                className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                value={(rec.categoryId || "none")}
-                onChange={(e) => setRec((s) => ({ ...s, categoryId: e.target.value === "none" ? "" : e.target.value }))}
-              >
+              <NativeSelect value={(rec.categoryId || "none")} onChange={(e) => setRec((s) => ({ ...s, categoryId: e.target.value === "none" ? "" : e.target.value }))}>
                 <option value="none">Sin categoría</option>
                 {categories.map((c) => (
                   <option key={c.id} value={c.id}>{c.name}</option>
                 ))}
-              </select>
+              </NativeSelect>
             </div>
             <div>
               <Button 
