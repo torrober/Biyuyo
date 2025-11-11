@@ -78,6 +78,13 @@ export interface Credit {
   lastPaidMonth?: string; // "YYYY-MM"
 }
 
+export interface Goal {
+  id: string;
+  name: string;
+  targetAmount: number; // objetivo
+  savedAmount: number; // abonado
+}
+
 // Helpers
 const monthKey = (d: Date = new Date()) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
@@ -90,6 +97,7 @@ interface FinanceState {
   macroGroups: MacroGroup[];
   recurrings: Recurring[];
   credits: Credit[];
+  goals: Goal[];
 
   // Derived helpers
   accountBalance: (accountId: string) => number;
@@ -141,6 +149,12 @@ interface FinanceState {
 
   payCreditInstallment: (id: string) => string | null; // creates expense and updates credit progress
 
+  addGoal: (g: Omit<Goal, "id"> & { id?: string }) => string;
+  updateGoal: (id: string, patch: Partial<Goal>) => void;
+  deleteGoal: (id: string) => void;
+  addToGoal: (id: string, amount: number) => void; // abonar dinero
+  removeFromGoal: (id: string, amount: number) => void; // quitar dinero
+
   // Import / Export
   exportData: () => string;
   importData: (json: string) => void;
@@ -171,6 +185,7 @@ export const useFinance = create<FinanceState>()(
       macroGroups: [],
       recurrings: [],
       credits: [],
+      goals: [],
 
       accountBalance: (accountId) => {
         const txs = get().transactions.filter((t) => t.accountId === accountId);
@@ -467,6 +482,38 @@ export const useFinance = create<FinanceState>()(
         return txId;
       },
 
+      addGoal: (g) => {
+        const id = g.id ?? generateId();
+        set((s) => ({ goals: [...s.goals, { ...g, id }] }));
+        return id;
+      },
+      updateGoal: (id, patch) => {
+        set((s) => ({
+          goals: s.goals.map((g) => (g.id === id ? { ...g, ...patch } : g)),
+        }));
+      },
+      deleteGoal: (id) => {
+        set((s) => ({ goals: s.goals.filter((g) => g.id !== id) }));
+      },
+      addToGoal: (id, amount) => {
+        set((s) => ({
+          goals: s.goals.map((g) =>
+            g.id === id
+              ? { ...g, savedAmount: Math.max(0, Math.min(g.targetAmount, g.savedAmount + amount)) }
+              : g
+          ),
+        }));
+      },
+      removeFromGoal: (id, amount) => {
+        set((s) => ({
+          goals: s.goals.map((g) =>
+            g.id === id
+              ? { ...g, savedAmount: Math.max(0, g.savedAmount - amount) }
+              : g
+          ),
+        }));
+      },
+
       exportData: () => {
         const data = {
           accounts: get().accounts,
@@ -475,6 +522,7 @@ export const useFinance = create<FinanceState>()(
           macroGroups: get().macroGroups,
           recurrings: get().recurrings,
           credits: get().credits,
+          goals: get().goals,
           version: 1,
           exportedAt: new Date().toISOString(),
         };
@@ -490,6 +538,7 @@ export const useFinance = create<FinanceState>()(
             macroGroups: data.macroGroups ?? [],
             recurrings: data.recurrings ?? [],
             credits: data.credits ?? [],
+            goals: data.goals ?? [],
           }));
         } catch (e) {
           console.error("Import error", e);
@@ -503,6 +552,7 @@ export const useFinance = create<FinanceState>()(
           macroGroups: [],
           recurrings: [],
           credits: [],
+          goals: [],
         }));
       },
     }),
