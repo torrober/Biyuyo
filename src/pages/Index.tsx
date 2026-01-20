@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { Zap, Pencil, Plus, ArrowRight } from "lucide-react";
+import { Zap, Pencil, Plus, ArrowRight, Target, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -31,6 +31,7 @@ const Dashboard = () => {
     recurrings,
     credits,
     macroGroups,
+    goals,
     totalSpendableBalance,
     monthlyObligationsTotal,
     monthlyObligationsRemaining,
@@ -394,6 +395,47 @@ const Dashboard = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Metas recientes */}
+      {goals.length > 0 && (
+        <Card className="cursor-pointer hover:shadow-md transition-shadow">
+          <Link to="/metas" className="block">
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Target className="h-4 w-4" />
+                  <CardTitle>Metas</CardTitle>
+                </div>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {goals.slice(-3).reverse().map((goal) => {
+                  const progress = goal.targetAmount > 0 ? (goal.savedAmount / goal.targetAmount) * 100 : 0;
+                  const remaining = Math.max(0, goal.targetAmount - goal.savedAmount);
+                  return (
+                    <div key={goal.id} className="space-y-2">
+                      <div className="flex items-start justify-between">
+                        <h4 className="font-semibold text-sm">{goal.name}</h4>
+                        <span className="text-xs text-muted-foreground">{currency(goal.targetAmount)}</span>
+                      </div>
+                      <Progress value={Math.min(100, progress)} className="h-1.5" />
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-primary font-medium">{currency(goal.savedAmount)}</span>
+                        <div className="flex items-center gap-1">
+                          <span className="text-muted-foreground">{currency(remaining)}</span>
+                          <Sparkles className="h-3 w-3 text-muted-foreground" />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Link>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>

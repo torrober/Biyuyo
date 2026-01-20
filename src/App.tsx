@@ -10,13 +10,14 @@ import Macros from "./pages/Macros";
 import Transacciones from "./pages/Transacciones";
 import FlujoDeCaja from "./pages/FlujoDeCaja";
 import Ajustes from "./pages/Ajustes";
+import Metas from "./pages/Metas";
 import AccountsSettings from "./pages/settings/Accounts";
 import CategoriesSettings from "./pages/settings/Categories";
 import RecurringsSettings from "./pages/settings/Recurrings";
 import CreditsSettings from "./pages/settings/Credits";
 import MacrosSettings from "./pages/settings/Macros";
 import BackupSettings from "./pages/settings/Backup";
-import { Home, Zap, List, Settings, Plus, Tag, CreditCard, Wallet, X } from "lucide-react";
+import { Home, Zap, List, Settings, Plus, Tag, CreditCard, Wallet, X, Target } from "lucide-react";
 import Header from "./components/Header";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger, SheetContent, SheetClose } from "@/components/ui/sheet";
@@ -95,6 +96,7 @@ const App = () => {
                   <Route path="/macros" element={<Macros />} />
                   <Route path="/transacciones" element={<Transacciones />} />
                   <Route path="/flujo-de-caja" element={<FlujoDeCaja />} />
+                  <Route path="/metas" element={<Metas />} />
                   <Route path="/ajustes" element={<Ajustes />} />
                   <Route path="/ajustes/cuentas" element={<AccountsSettings />} />
                   <Route path="/ajustes/categorias" element={<CategoriesSettings />} />
@@ -146,9 +148,9 @@ const App = () => {
                           </SheetClose>
                           <SheetClose asChild>
                             <Button asChild variant="outline" className="w-full justify-between">
-                              <Link to="/ajustes/cuentas" aria-label="Abonar a una meta" className="flex w-full items-center justify-between">
+                              <Link to="/metas" aria-label="Abonar a una meta" className="flex w-full items-center justify-between">
                                 <span className="text-sm">Abonar a una meta</span>
-                                <Wallet className="h-4 w-4 opacity-70" />
+                                <Target className="h-4 w-4 opacity-70" />
                               </Link>
                             </Button>
                           </SheetClose>
